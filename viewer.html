@@ -49,11 +49,16 @@
 
 			#annotation-description{
 				position: absolute;
-				bottom:0;
-				left:0;
-				width:100vw;
-				background:red;
-				min-height:5rem;
+			    bottom: 0;
+			    left: 0;
+			    width: 100vw;
+			    background: #7b82ea75;
+			    height: 0;
+			    padding: 16px;
+			    color: #ffffff;
+			    font-size: 1.15rem;
+			    backdrop-filter: blur(12px);
+			    opacity:0;
 			}
 
 			
@@ -83,11 +88,11 @@
 			let camera, controls, scene, renderer, pmremGenerator;
 
 			const annotations = [{number: 1, 
-					      desc: '', 
+					      desc: 'This is a description that is long enough to be read but not long enough to have any valuable info', 
 					      position: {x:33, y: 2, z:-36}, 
 					      camPos: {x:126, y:2, z:-150}}, 
 					{number: 2, 
-					      desc: '', 
+					      desc: 'Hey! I am just a small description', 
 					      position: {x:-28, y:31, z:25}, 
 					      camPos: {x:-146, y:130, z:-15}}
 					];
@@ -95,7 +100,7 @@
 
 			let adjustedCanvasWidth, adjustedCanvasHeight;
 			let meshPos;
-			let showAnnotations = true;
+			let showAnnotations = true, annotDescHolder, isDescBoxOpen = false;
 			let mouse = {}, raycaster; 
 
 			init();
@@ -133,8 +138,7 @@
 				controls = new OrbitControls( camera, renderer.domElement );
 				controls.listenToKeyEvents( window ); // optional
 
-				//controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
-
+				
 				controls.enableDamping = true; 
 				controls.dampingFactor = 0.05;
 
@@ -159,6 +163,7 @@
 				adjustedCanvasHeight = renderer.domElement.height / window.devicePixelRatio;
 
 				createAnnotationMarkers();
+				annotDescHolder = document.getElementById('annotation-description')
 				
 				raycaster = new THREE.Raycaster();
 				
@@ -293,8 +298,17 @@
 				
 				gsap.to(camera.position, {...annotations[id].camPos, duration:1.8, ease: "expo.out", onComplete: () => {
 					console.log('tweening done');
-					showAnnotations = true;				
-				}})				
+					showAnnotations = true;	
+					//gsap.fromTo(annotDescHolder, {height:0, opacity:0}, {duration: 0.9, opacity:1.0, height: '12rem', ease: "expo.out"});			
+				}});
+
+				
+				annotDescHolder.innerText = annotations[id].desc;
+
+				if(!isDescBoxOpen) {
+					gsap.fromTo(annotDescHolder, {height:0, opacity:0}, {duration: 1, opacity:1.0, height: '12rem', ease: "expo.out"});
+					isDescBoxOpen = true;	
+				}	
 				
 			}
 
