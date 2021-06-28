@@ -61,6 +61,18 @@
 			    opacity:0;
 			}
 
+			#splash{
+				position: fixed;
+				width:1vw;
+				height:1vw;
+				transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+				border-radius: 50%;
+				top:50%;
+				left:50%;
+				background: #7683eb;
+				z-index:500;
+			}
+
 			
 		</style>
 		<script>
@@ -69,6 +81,15 @@
 	</head>
 
 	<body>
+		<div id="splash"></div>
+		<script>
+			setTimeout(() => {
+				const el = document.getElementById('splash');
+				el.style.transform = 'scale(280)';
+				//el.style.opacity = 1.0;
+			}, 300);			
+			
+		</script>
 		<div id="annotation-markers">
 			
 		</div>
