@@ -42,6 +42,15 @@
 				color: white;
 			}
 
+			#annotation-description{
+				position: absolute;
+				bottom:0;
+				left:0;
+				width:100vw;
+				background:red;
+				min-height:5rem;
+			}
+
 			
 		</style>
 		<script>
@@ -53,6 +62,10 @@
 		<div id="annotation-markers">
 			
 		</div>
+		<div id="annotation-description">
+			
+		</div>
+
 
 		<script type="module">
 
@@ -66,18 +79,19 @@
 
 			const annotations = [{number: 1, 
 					      desc: '', 
-					      position: {x:1, y:1, z:1}, 
-					      camPos: {x:-25, y:41, z:-144}}, 
+					      position: {x:33, y: 2, z:-36}, 
+					      camPos: {x:126, y:2, z:-150}}, 
 					{number: 2, 
 					      desc: '', 
-					      position: {x:1, y:20, z:4}, 
-					      camPos: {x:-100, y:2, z:-348}}
+					      position: {x:-28, y:31, z:25}, 
+					      camPos: {x:-146, y:130, z:-15}}
 					];
  
 
 			let adjustedCanvasWidth, adjustedCanvasHeight;
 			let meshPos;
-			var showAnnotations = true;
+			let showAnnotations = true;
+			let mouse = {}, raycaster; 
 
 			init();
 			//render(); // remove when using next line for animation loop (requestAnimationFrame)
@@ -123,7 +137,7 @@
 				controls.minDistance = 100;
 				controls.maxDistance = 500;
 
-				controls.maxPolarAngle = Math.PI / 2;
+				//controls.maxPolarAngle = Math.PI / 2;
 
 				// world
 
@@ -139,10 +153,12 @@
 				adjustedCanvasHeight = renderer.domElement.height / window.devicePixelRatio;
 
 				createAnnotationMarkers();
-
+				
+				raycaster = new THREE.Raycaster();
 				
 
 				window.addEventListener( 'resize', onWindowResize );
+				window.addEventListener('pointerdown', raycast);
 
 			}
 
@@ -184,12 +200,15 @@
 				
 					holder.innerHTML += `<div data-id=${index} class="annotation-marker" onclick="handleAnnotClick(${index})"><span>${annot.number}</span><div>`;
 					annot.visible = false;
+					annot.position = new THREE.Vector3(annot.position.x, annot.position.y, annot.position.z);
 
 				});
 
 				Array.from(document.getElementsByClassName('annotation-marker')).forEach((ele, index) => {
 					annotations[ele.getAttribute('data-id')].el = ele;
 				});
+
+				console.log(annotations);
 			}
 
 			function updateAnnotationMarkers(){
@@ -216,8 +235,8 @@
 						vector.project(camera); 
 
 
-						annot.el.style.top = Math.round((0.5 + vector.x / 2) * adjustedCanvasWidth) +'px';
-						annot.el.style.left = Math.round((0.5 - vector.y / 2) * adjustedCanvasHeight) +'px';
+						annot.el.style.left = Math.round((0.5 + vector.x / 2) * adjustedCanvasWidth) +'px';
+						annot.el.style.top = Math.round((0.5 - vector.y / 2) * adjustedCanvasHeight) +'px';
 						
 						
 						if(!annot.visible){
@@ -234,7 +253,22 @@
 			}
 		
 			
-			function raycast(){
+			function raycast(event){
+				
+				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+				raycaster.setFromCamera( mouse, camera );
+
+				
+				const intersects = raycaster.intersectObjects( scene.children, true );
+
+				for ( let i = 0; i < intersects.length; i ++ ) {
+
+					//intersects[ i ].object.material.color.set( 0xff0000 );
+					console.log(intersects[0].point);
+
+				}
 
 
 			}
@@ -245,8 +279,10 @@
 				
 				showAnnotations = false;
 
-				Array.from(document.getElementsByClassName('annotation-marker')).forEach((ele, index) => {
-					ele.style.opacity = 0;
+				annotations.forEach((annot) => {
+					annot.el.style.opacity = 0;
+					annot.el.style.transform = 'scale(0)';
+					annot.visible = false;
 				});
 				
 				gsap.to(camera.position, {...annotations[id].camPos, duration:1.8, ease: "expo.out", onComplete: () => {
