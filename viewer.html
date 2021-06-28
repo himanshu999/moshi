@@ -74,6 +74,42 @@
 			}
 
 			
+			#loadingtext {
+			  position: absolute;
+			    z-index: 600;
+			    color: white;
+			    left: 50%;
+			    transform: translate(-50%) !important;
+			    top: 50%;
+			    text-transform: uppercase;
+			    font: 1000 4em/1 "Nunito", sans-serif;
+			    letter-spacing: 6px;
+			    filter: drop-shadow(2px 4px 6px #333) brightness(1.2);
+			    /* font-weight: 800; */
+			    padding: 0.25em 0 0.325em;
+			    display: block;
+			    margin: 0 auto;
+			    text-shadow: 0 0 80px rgb(255 255 255 / 50%);
+			    background: url(https://i.ibb.co/RDTnNrT/animated-text-fill.png) repeat-y;
+			    -webkit-background-clip: text;
+			    background-clip: text;
+			    -webkit-text-fill-color: transparent;
+			    -webkit-animation: aitf 80s linear infinite;
+			    -webkit-transform: translate3d(0, 0, 0);
+			    -webkit-backface-visibility: hidden;
+			}
+
+			
+			@-webkit-keyframes aitf {
+			  0% {
+			    background-position: 0% 50%;
+			  }
+			  100% {
+			    background-position: 100% 50%;
+			  }
+			}
+
+			
 		</style>
 		<script>
 		 var camerag;
@@ -82,6 +118,7 @@
 
 	<body>
 		<div id="splash"></div>
+		<p id="loadingtext">Liminal</p>
 		<script>
 			setTimeout(() => {
 				const el = document.getElementById('splash');
