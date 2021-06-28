@@ -78,7 +78,7 @@
 			  position: absolute;
 			    z-index: 600;
 			    color: white;
-			    left: 50%;
+			    left: 0%;
 			    transform: translate(-50%) !important;
 			    top: 47%;
 			    text-transform: uppercase;
@@ -97,6 +97,8 @@
 			    -webkit-animation: aitf 80s linear infinite;
 			    -webkit-transform: translate3d(0, 0, 0);
 			    -webkit-backface-visibility: hidden;
+			     transition: opacity 0.3s ease-in-out;
+			     opacity:0;
 			}
 
 			
@@ -264,7 +266,7 @@
 
 	<body>
 		<div id="splash"></div>
-		<!--<p id="loadingtext">Liminal</p>-->
+		<p id="loadingtext">Liminal</p>
 
 		<div id="round-loader" class="frame">
 		   <div class="center">
@@ -282,6 +284,12 @@
 				setTimeout(() => {
 					const rl = document.getElementById('round-loader');
 					rl.style.opacity = 1.0;
+
+					setTimeout(() => {
+						const lt = document.getElementById('loadingtext');
+						lt.style.opacity = 1.0;
+						lt.style.left = '50%';
+					}, 600);
 				}, 1200);
 			}, 300);			
 			
@@ -374,6 +382,12 @@
 				scene.add( mesh );
 
 				meshPos = mesh.position;
+
+				setTimeout(() => {
+				
+					hideLoadingScreen();
+	
+				}, 10000);
 
 				
 				adjustedCanvasWidth = renderer.domElement.width / window.devicePixelRatio;
@@ -530,6 +544,28 @@
 			}
 
 			window.handleAnnotClick = handleAnnotClick;
+
+			function hideLoadingScreen(){
+
+				const splash = document.getElementById('splash');
+				const lt = document.getElementById('loadingtext');
+				const rl = document.getElementById('round-loader');
+
+				rl.style.opacity = 0;
+				lt.style.opacity = 0;
+				setTimeout(() => {
+					splash.style.transform = 'scale(0)';
+				
+					setTimeout(() => {
+						splash.remove();
+						rl.remove();
+						lt.remove();
+					}, 1000);
+				}, 1000);
+
+				
+				
+			}
 
 		</script>
 
