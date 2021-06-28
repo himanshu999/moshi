@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>three.js webgl - orbit controls</title>
+		<title>Liminal</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap" rel="stylesheet">
 		<link type="text/css" rel="stylesheet" href="./assets/main.css">
+		
 		<style>
 			body {
 				background-color: #ccc;
 				color: #000;
 				overflow-x:hidden;
 				overflow-y:hidden;
+				font-family: 'Nunito', sans-serif;
 			}
 
 			a {
@@ -18,17 +23,21 @@
 			}
 			
 			.annotation-marker{
-				position:absolute;
-				top:0;
-				bottom:0;
-				height:30px;
-				width:30px;
-				border-radius:50%;
-				cursor:pointer;
+				position: absolute;
+			    	border-radius: 50%;
+			    	cursor: pointer;
+			    	padding: 0;
+			    	margin: 0;
+			    	border: 2px solid #dddc;
+			    	background: #00000061;
+			    	padding: 1px 9px;
+			    	transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 			}
 			
 			.annotation-marker span{
-				font-size:12px;
+				font-size: 13px;
+				font-weight: 600;
+				color: white;
 			}
 
 			
@@ -60,6 +69,9 @@
 					      camPos: {x:1, y:1, z:1}}
 					];
  
+
+			let adjustedCanvasWidth, adjustedCanvasHeight;
+			let meshPos;
 
 			init();
 			//render(); // remove when using next line for animation loop (requestAnimationFrame)
@@ -113,10 +125,15 @@
 				const mesh = new THREE.Mesh( geometry, material );
 				scene.add( mesh );
 
+				meshPos = mesh.position;
+
+				
+				adjustedCanvasWidth = renderer.domElement.width / window.devicePixelRatio;
+				adjustedCanvasHeight = renderer.domElement.height / window.devicePixelRatio;
 
 				createAnnotationMarkers();
 
-				//
+				
 
 				window.addEventListener( 'resize', onWindowResize );
 
@@ -127,6 +144,9 @@
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 
+				adjustedCanvasWidth = renderer.domElement.width / window.devicePixelRatio;
+				adjustedCanvasHeight = renderer.domElement.height / window.devicePixelRatio;
+
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
 			}
@@ -135,7 +155,7 @@
 
 				requestAnimationFrame( animate );
 
-				controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
+				controls.update(); 
 
 				updateAnnotationMarkers();
 
@@ -155,18 +175,30 @@
 				
 				annotations.forEach((annot, index) => {
 				
-					holder.innerHTML += `<div data-index=${index} class="annotation-marker"><span>${annot.number}</span><div>`;
+					holder.innerHTML += `<div data-id=${index} class="annotation-marker"><span>${annot.number}</span><div>`;
 
 				});
 
 				Array.from(document.getElementsByClassName('annotation-marker')).forEach((ele, index) => {
-					annotations[ele.getAttribute('data-index')]['el'] = ele;
+					annotations[ele.getAttribute('data-id')].el = ele;
 				});
 			}
 
 			function updateAnnotationMarkers(){
-				annotations.forEach(() => {
+				
 
+				annotations.forEach((annot, index) => {
+					
+					const vector = new THREE.Vector3().copy(annot.position);					
+					vector.project(camera); 
+
+					//vector.x = Math.round((0.5 + vector.x / 2) * adjustedCanvasWidth);
+					//vector.y = Math.round((0.5 - vector.y / 2) * adjustedCanvasHeight);
+		
+
+					annot.el.style.top = Math.round((0.5 + vector.x / 2) * adjustedCanvasWidth) +'px';
+					annot.el.style.left = Math.round((0.5 - vector.y / 2) * adjustedCanvasHeight) +'px';
+					//annot.el.style.opacity = '1.0';	
 				});
 			}
 
