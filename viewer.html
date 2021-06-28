@@ -306,6 +306,8 @@
 
 			import * as THREE from '../build/three.module.js';
 
+			import { GLTFLoader } from './jsm/GLTFLoader.js';
+
 			import { OrbitControls } from './jsm/OrbitControls.js';
 
 			import { RoomEnvironment } from './jsm/RoomEnvironment.js';
@@ -325,7 +327,7 @@
 
 			let adjustedCanvasWidth, adjustedCanvasHeight;
 			let meshPos;
-			let showAnnotations = true, annotDescHolder, isDescBoxOpen = false;
+			let showAnnotations = false, annotDescHolder, isDescBoxOpen = false;
 			let mouse = {}, raycaster; 
 
 			init();
@@ -371,29 +373,59 @@
 
 				controls.minDistance = 100;
 				controls.maxDistance = 500;
+				controls.autoRotate = true;
 
 				//controls.maxPolarAngle = Math.PI / 2;
 
+
+
+				const loader = new GLTFLoader();
+				loader.load( './assets/Duck.glb', function ( gltf ) {
+
+							/*gltf.scene.traverse( function ( child ) {
+
+								if ( child.isMesh ) {
+
+									//roughnessMipmapper.generateMipmaps( child.material );
+
+								}
+
+							} ); */
+
+							scene.add( gltf.scene );
+
+							//roughnessMipmapper.dispose();
+
+							meshPos = gltf.scene.position;
+							hideLoadingScreen();
+							createAnnotationMarkers();
+							showAnnotations = true;
+
+						} );
+
+
+
+
 				// world
 
-				const geometry = new THREE.SphereGeometry( 50, 40, 40 );
+				/*const geometry = new THREE.SphereGeometry( 50, 40, 40 );
 				const material = new THREE.MeshStandardMaterial( { color: 0xff0000, metalness: 0.5, roughness: 0.4 } );
 				const mesh = new THREE.Mesh( geometry, material );
 				scene.add( mesh );
 
-				meshPos = mesh.position;
+				meshPos = mesh.position; 
 
 				setTimeout(() => {
 				
 					hideLoadingScreen();
 	
-				}, 10000);
+				}, 10000); */
 
 				
 				adjustedCanvasWidth = renderer.domElement.width / window.devicePixelRatio;
 				adjustedCanvasHeight = renderer.domElement.height / window.devicePixelRatio;
 
-				createAnnotationMarkers();
+				//createAnnotationMarkers();
 				annotDescHolder = document.getElementById('annotation-description')
 				
 				raycaster = new THREE.Raycaster();
@@ -496,6 +528,9 @@
 		
 			
 			function raycast(event){
+				
+				controls.autoRotate = false;
+				setTimeout(() => (controls.autoRotate = true), 4000);
 				
 				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
