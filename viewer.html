@@ -8,6 +8,7 @@
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap" rel="stylesheet">
 		<link type="text/css" rel="stylesheet" href="./assets/main.css">
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
 		
 		<style>
 			body {
@@ -32,6 +33,7 @@
 			    	background: #00000061;
 			    	padding: 1px 9px;
 			    	transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+				opacity:0;
 			}
 			
 			.annotation-marker span{
@@ -42,6 +44,9 @@
 
 			
 		</style>
+		<script>
+		 var camerag;
+		</script>
 	</head>
 
 	<body>
@@ -62,16 +67,17 @@
 			const annotations = [{number: 1, 
 					      desc: '', 
 					      position: {x:1, y:1, z:1}, 
-					      camPos: {x:1, y:1, z:1}}, 
+					      camPos: {x:-25, y:41, z:-144}}, 
 					{number: 2, 
 					      desc: '', 
-					      position: {x:1, y:1, z:1}, 
-					      camPos: {x:1, y:1, z:1}}
+					      position: {x:1, y:20, z:4}, 
+					      camPos: {x:-100, y:2, z:-348}}
 					];
  
 
 			let adjustedCanvasWidth, adjustedCanvasHeight;
 			let meshPos;
+			var showAnnotations = true;
 
 			init();
 			//render(); // remove when using next line for animation loop (requestAnimationFrame)
@@ -100,6 +106,7 @@
 
 				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
 				camera.position.set( 400, 200, 0 );
+				camerag = camera;
 
 				// controls
 
@@ -157,7 +164,7 @@
 
 				controls.update(); 
 
-				updateAnnotationMarkers();
+				showAnnotations && updateAnnotationMarkers();
 
 				render();
 
@@ -175,7 +182,8 @@
 				
 				annotations.forEach((annot, index) => {
 				
-					holder.innerHTML += `<div data-id=${index} class="annotation-marker"><span>${annot.number}</span><div>`;
+					holder.innerHTML += `<div data-id=${index} class="annotation-marker" onclick="handleAnnotClick(${index})"><span>${annot.number}</span><div>`;
+					annot.visible = false;
 
 				});
 
@@ -188,19 +196,67 @@
 				
 
 				annotations.forEach((annot, index) => {
+
+
+					const meshDistance = camera.position.distanceTo(meshPos);
+					const spriteDistance = camera.position.distanceTo(annot.position);
 					
-					const vector = new THREE.Vector3().copy(annot.position);					
-					vector.project(camera); 
+					const spriteBehindObject = spriteDistance > meshDistance;
+					//console.log(spriteBehindObject && annot.visible);
 
-					//vector.x = Math.round((0.5 + vector.x / 2) * adjustedCanvasWidth);
-					//vector.y = Math.round((0.5 - vector.y / 2) * adjustedCanvasHeight);
-		
+					if(spriteBehindObject && annot.visible){
+						//annot.el.style.opacity = 0;
+						annot.el.style.transform = 'scale(0)';
+						annot.el.style.opacity = 0;
+						annot.visible = false;
 
-					annot.el.style.top = Math.round((0.5 + vector.x / 2) * adjustedCanvasWidth) +'px';
-					annot.el.style.left = Math.round((0.5 - vector.y / 2) * adjustedCanvasHeight) +'px';
+					}else if(!spriteBehindObject){
+				
+						const vector = new THREE.Vector3().copy(annot.position);					
+						vector.project(camera); 
+
+
+						annot.el.style.top = Math.round((0.5 + vector.x / 2) * adjustedCanvasWidth) +'px';
+						annot.el.style.left = Math.round((0.5 - vector.y / 2) * adjustedCanvasHeight) +'px';
+						
+						
+						if(!annot.visible){
+							annot.el.style.transform = 'scale(1.0)';
+							annot.el.style.opacity = 1.0; 
+							annot.visible = true;
+						}
+
+					}
+					
+					
 					//annot.el.style.opacity = '1.0';	
 				});
 			}
+		
+			
+			function raycast(){
+
+
+			}
+			
+
+
+			function handleAnnotClick(id){
+				
+				showAnnotations = false;
+
+				Array.from(document.getElementsByClassName('annotation-marker')).forEach((ele, index) => {
+					ele.style.opacity = 0;
+				});
+				
+				gsap.to(camera.position, {...annotations[id].camPos, duration:1.8, ease: "expo.out", onComplete: () => {
+					console.log('tweening done');
+					showAnnotations = true;				
+				}})				
+				
+			}
+
+			window.handleAnnotClick = handleAnnotClick;
 
 		</script>
 
