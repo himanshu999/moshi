@@ -80,7 +80,7 @@
 			    color: white;
 			    left: 50%;
 			    transform: translate(-50%) !important;
-			    top: 50%;
+			    top: 47%;
 			    text-transform: uppercase;
 			    font: 1000 4em/1 "Nunito", sans-serif;
 			    letter-spacing: 6px;
@@ -109,6 +109,152 @@
 			  }
 			}
 
+			.frame {
+			  position: absolute;
+			  top: 35%;
+			  left: 50%;
+			  width: 400px;
+			  height: 400px;
+			  margin-top: -200px;
+			  margin-left: -200px;
+			  border-radius: 2px;
+			  z-index:600;
+			  color: #fff;
+			  opacity:0;
+			  transition: opacity 0.9s ease-in-out;
+			}
+
+			.center {
+			  position: absolute;
+			  width: 220px;
+			  height: 220px;
+			  top: 90px;
+			  left: 90px;
+			  transform: scale(1.1);
+    			  opacity: 0.9;
+			}
+			
+
+			.dot-1 {
+			  position: absolute;
+			  z-index: 3;
+			  width: 30px;
+			  height: 30px;
+			  top: 95px;
+			  left: 95px;
+			  background: #f16441;
+			  border-radius: 50%;
+			  -webkit-animation-fill-mode: both;
+				  animation-fill-mode: both;
+			  -webkit-animation: jump-jump-1 2s cubic-bezier(0.21, 0.98, 0.6, 0.99) infinite alternate;
+				  animation: jump-jump-1 2s cubic-bezier(0.21, 0.98, 0.6, 0.99) infinite alternate;
+			}
+
+			.dot-2 {
+			  position: absolute;
+			  z-index: 2;
+			  width: 60px;
+			  height: 60px;
+			  top: 80px;
+			  left: 80px;
+			  background: #fe683c17;
+			  border-radius: 50%;
+			  -webkit-animation-fill-mode: both;
+				  animation-fill-mode: both;
+			  -webkit-animation: jump-jump-2 2s cubic-bezier(0.21, 0.98, 0.6, 0.99) infinite alternate;
+				  animation: jump-jump-2 2s cubic-bezier(0.21, 0.98, 0.6, 0.99) infinite alternate;
+			}
+
+			.dot-3 {
+			  position: absolute;
+			  z-index: 1;
+			  width: 90px;
+			  height: 90px;
+			  top: 65px;
+			  left: 65px;
+			  background: #fff;
+			  border-radius: 50%;
+			  -webkit-animation-fill-mode: both;
+				  animation-fill-mode: both;
+			  -webkit-animation: jump-jump-3 2s cubic-bezier(0.21, 0.98, 0.6, 0.99) infinite alternate;
+				  animation: jump-jump-3 2s cubic-bezier(0.21, 0.98, 0.6, 0.99) infinite alternate;
+			}
+
+			@-webkit-keyframes jump-jump-1 {
+			  0%, 70% {
+			    box-shadow: 2px 2px 3px 2px rgba(0, 0, 0, 0.2);
+			    -webkit-transform: scale(0);
+				    transform: scale(0);
+			  }
+			  100% {
+			    box-shadow: 10px 10px 15px 0 rgba(0, 0, 0, 0.3);
+			    -webkit-transform: scale(1);
+				    transform: scale(1);
+			  }
+			}
+
+			@keyframes jump-jump-1 {
+			  0%, 70% {
+			    box-shadow: 2px 2px 3px 2px rgba(0, 0, 0, 0.2);
+			    -webkit-transform: scale(0);
+				    transform: scale(0);
+			  }
+			  100% {
+			    box-shadow: 10px 10px 15px 0 rgba(0, 0, 0, 0.3);
+			    -webkit-transform: scale(1);
+				    transform: scale(1);
+			  }
+			}
+			@-webkit-keyframes jump-jump-2 {
+			  0%, 40% {
+			    box-shadow: 2px 2px 3px 2px rgba(0, 0, 0, 0.2);
+			    -webkit-transform: scale(0);
+				    transform: scale(0);
+			  }
+			  100% {
+			    box-shadow: 10px 10px 15px 0 rgba(0, 0, 0, 0.3);
+			    -webkit-transform: scale(1);
+				    transform: scale(1);
+			  }
+			}
+			@keyframes jump-jump-2 {
+			  0%, 40% {
+			    box-shadow: 2px 2px 3px 2px rgba(0, 0, 0, 0.2);
+			    -webkit-transform: scale(0);
+				    transform: scale(0);
+			  }
+			  100% {
+			    box-shadow: 10px 10px 15px 0 rgba(0, 0, 0, 0.3);
+			    -webkit-transform: scale(1);
+				    transform: scale(1);
+			  }
+			}
+			@-webkit-keyframes jump-jump-3 {
+			  0%, 10% {
+			    box-shadow: 2px 2px 3px 2px rgba(0, 0, 0, 0.2);
+			    -webkit-transform: scale(0);
+				    transform: scale(0);
+			  }
+			  100% {
+			    box-shadow: 10px 10px 15px 0 rgba(0, 0, 0, 0.3);
+			    -webkit-transform: scale(1);
+				    transform: scale(1);
+			  }
+			}
+			@keyframes jump-jump-3 {
+			  0%, 10% {
+			    box-shadow: 2px 2px 3px 2px rgba(0, 0, 0, 0.2);
+			    -webkit-transform: scale(0);
+				    transform: scale(0);
+			  }
+			  100% {
+			    box-shadow: 10px 10px 15px 0 rgba(0, 0, 0, 0.3);
+			    -webkit-transform: scale(1);
+				    transform: scale(1);
+			  }
+			}
+
+
 			
 		</style>
 		<script>
@@ -118,12 +264,25 @@
 
 	<body>
 		<div id="splash"></div>
-		<p id="loadingtext">Liminal</p>
+		<!--<p id="loadingtext">Liminal</p>-->
+
+		<div id="round-loader" class="frame">
+		   <div class="center">
+		      <div class="dot-1"></div>
+		      <div class="dot-2"></div>
+		      <div class="dot-3"></div>
+		   </div>
+		</div>
 		<script>
 			setTimeout(() => {
 				const el = document.getElementById('splash');
 				el.style.transform = 'scale(280)';
 				//el.style.opacity = 1.0;
+
+				setTimeout(() => {
+					const rl = document.getElementById('round-loader');
+					rl.style.opacity = 1.0;
+				}, 1200);
 			}, 300);			
 			
 		</script>
