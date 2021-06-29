@@ -4,9 +4,15 @@
 		<title>Liminal</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap" rel="stylesheet">
 		<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 		
 		<style>
+		body{
+			font-family: 'Nunito', sans-serif;
+		   }
 
 		  #hotspot-demo{
 			width:100vw;
@@ -59,13 +65,19 @@
 		  }
 			
 		#annotation-holder{
-			position:absolute;
-			top: 0;
-			left:0;
-			width:100vw;
-			height: 10rem;
-			background: black;
-			z-index:1000;
+			    position: absolute;
+			    top: 0;
+			    left: 0;
+			    width: 100vw;
+			    height: 8rem;
+			    background: #00000063;
+			    z-index: 1000;
+			    font-size: 1.1rem;
+			    backdrop-filter: blur(8px);
+			    color: white;
+			    opacity: 0;
+			    padding: 16px;
+			    transition: opacity 0.3s ease-in-out;
 			
 		}
 
@@ -86,7 +98,7 @@
 		
 		if(isAnnotDescBoxOpen) ah.style.opacity = 1.0;
 		
-		console.log(desc[number-1]);
+		//console.log(desc[number-1]);
 		ah.innerHTML = desc[number-1];
 	}
 </script>
@@ -99,9 +111,7 @@
 <button onclick="handleAnnotClick(1)" slot="hotspot-some1" data-position="-0.1 -0.13 0.15" data-normal="-1 0 0">1
     
   </button>
-<button onclick="handleAnnotClick(3)" slot="hotspot-some2" data-position="0.89 0.14 0.08" data-normal="0.74 0.65 -0.10">3
-    <!--<div id="annotation">This hotspot disappears completely</div>-->
-  </button>
+<button onclick="handleAnnotClick(3)" slot="hotspot-some2" data-position="0.89 0.14 0.08" data-normal="0.74 0.65 -0.10">3</button>
   
   <!--<div id="annotation">This annotation is fixed in screen-space</div>-->
 </model-viewer>
