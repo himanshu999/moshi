@@ -15,23 +15,25 @@
 
 		  button{
 		    display: block;
-		    width: 20px;
-		    height: 20px;
-		    border-radius: 10px;
-		    border: none;
-		    background-color: black;
-		    border-radius: 1px solid #DDD;
+		    /* width: 20px; */
+		    /* height: 20px; */
+		    border-radius: 50%;
+		    /* border: none; */
+		    background-color: #000000ab !important;
+		    border: 1px solid #DDD !important;
 		    box-sizing: border-box;
+		    color: white;
+		    padding: 3px 7px;
 		  }
 
 		  button[slot="hotspot-hand"]{
 		    --min-hotspot-opacity: 0;
-		    background-color: red;
+		    
 		  }
 
 		  button[slot="hotspot-foot"]:not([data-visible]) {
 		    background-color: transparent;
-		    border: 3px solid blue;
+		    
 		  }
 
 		  #annotation{
@@ -54,7 +56,7 @@
 <body>
 <model-viewer id="hotspot-demo" ar ar-modes="webxr" camera-controls src="./assets/model.glb" style="--poster-color:#ffffff00;" alt="A 3D model of a machine.">
   <button slot="ar-button">View in AR</button>	
-  <button slot="hotspot-visor" data-position="0 1.75 0.35" data-normal="0 0 1"></button>
+  <button slot="hotspot-visor" data-position="-87 20 19" data-normal="0 0 1"></button>
   <button slot="hotspot-hand" data-position="-0.54 0.93 0.1" data-normal="-0.73 0.05 0.69">
     <div id="annotation">This hotspot disappears completely</div>
   </button>
