@@ -57,6 +57,17 @@
 		  :not(:defined) > * {
 		    display: none;
 		  }
+			
+		#annotation-holder{
+			position:absolute;
+			top: 0;
+			left:0;
+			width:100vw;
+			height: 10rem;
+			background: black;
+			z-index:1000;
+			
+		}
 
 		 
 		</style>
@@ -64,16 +75,32 @@
 </head>
 
 <body>
+	<div id="annotation-holder">
+	</div>
+<script>
+		const desc = ['This is the description for annotation #1', 'This is the description for annotation #2', 'This is the description for annotation #3'];
+		var ah = document.getElementById('annotation-holder');
+		let isAnnotDescBoxOpen = false;
+	
+	function handleAnnotClick(number){
+		
+		if(isAnnotDescBoxOpen) ah.style.opacity = 1.0;
+		
+		console.log(desc[number-1]);
+		ah.innerHTML = desc[number-1];
+	}
+</script>
+	
 <model-viewer id="hotspot-demo" ar ar-modes="webxr" camera-controls src="./assets/model.glb" style="--poster-color:#ffffff00;" alt="A 3D model of a machine.">
   <button slot="ar-button">View in AR</button>	
-  <button onclick="alert('Hello');" slot="hotspot-hand" data-position="-0.38 0.13 0.26" data-normal="0.43 0.15 0.88">2
-    <div id="annotation">This hotspot disappears completely</div>
+  <button onclick="handleAnnotClick(2)" slot="hotspot-hand" data-position="-0.38 0.13 0.26" data-normal="0.43 0.15 0.88">2
+    
   </button>
-<button slot="hotspot-some1" data-position="-0.1 -0.13 0.15" data-normal="-1 0 0">1
-    <div id="annotation">This hotspot disappears completely and this is a longer version of the annotation we just saw. Okay. So bear with me.</div>
+<button onclick="handleAnnotClick(1)" slot="hotspot-some1" data-position="-0.1 -0.13 0.15" data-normal="-1 0 0">1
+    
   </button>
-<button slot="hotspot-some2" data-position="0.89 0.14 0.08" data-normal="0.74 0.65 -0.10">3
-    <div id="annotation">This hotspot disappears completely</div>
+<button onclick="handleAnnotClick(3)" slot="hotspot-some2" data-position="0.89 0.14 0.08" data-normal="0.74 0.65 -0.10">3
+    <!--<div id="annotation">This hotspot disappears completely</div>-->
   </button>
   
   <!--<div id="annotation">This annotation is fixed in screen-space</div>-->
