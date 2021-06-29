@@ -96,8 +96,8 @@
 	
 	function handleAnnotClick(number){
 		
-		if(isAnnotDescBoxOpen) ah.style.opacity = 1.0;
-		
+		if(isAnnotDescBoxOpen) { ah.style.opacity = 1.0;  isAnnotDescBoxOpen = true; }
+   		
 		//console.log(desc[number-1]);
 		ah.innerHTML = desc[number-1];
 	}
