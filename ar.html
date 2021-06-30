@@ -42,15 +42,16 @@
 		  }
 			
 		   button[slot="ar-button"]{
-		    position: fixed;
-	            top: 0;
-	            bottom: 0;
-                    z-index:1000;
-		    width: 100vw;
-	            height: 100vh;
+		    
 		  }
 		
 		  #ar-btn{
+			position: fixed;
+	            	top: 0;
+	            	bottom: 0;
+                        z-index:1000;
+		    	width: 100vw;
+	            	height: 100vh;
 			background: #7683eb !important;
 			border: none;
 			border-radius:0;
@@ -116,9 +117,10 @@
 </head>
 
 <body>
+ 
 	
 <model-viewer id="hotspot-demo" ar ar-modes="webxr" camera-controls src="./assets/model.glb" style="--poster-color:#ffffff00;" alt="A 3D model of a machine.">
-  <button id="ar-btn" slot="ar-button">
+  <button id="ar-btn" slot="">
 	  <h1>Instructions</h1>
 	  <p>You may want to move to a place which has more of a free floor area for a better AR experience</p>
 	  <p>Once the AR session starts, please move your camera around for a while for the AR session to work well</p>
@@ -126,7 +128,7 @@
 	  <p>Don't forget to click on the hotspots!</p>
 	  
 	  <h2 id="cta-ar">Tap on the screen whenever you are ready for an immersive AR experience</h2>
-  </button>	
+  </button>
   <button onclick="handleAnnotClick(2)" slot="hotspot-hand" data-position="-0.38 0.13 0.26" data-normal="0.43 0.15 0.88">2
     <!--<div id="testanno" class="annotation">This annotation is fixed in screen-space</div>-->
   </button>
