@@ -66,6 +66,7 @@
 		    transform: translate(10px, 10px);
 		    border-radius: 10px;
 		    padding: 10px;
+		    opacity: 0;
 		  }
 		  /* This keeps child nodes hidden while the element loads */
 		  :not(:defined) > * {
@@ -104,17 +105,19 @@
 	
 	function handleAnnotClick(number){
 		
-		if(!isAnnotDescBoxOpen) { ah.style.opacity = 1.0;  isAnnotDescBoxOpen = true; }
+		/*if(!isAnnotDescBoxOpen) { ah.style.opacity = 1.0;  isAnnotDescBoxOpen = true; }
    		
 		//console.log(desc[number-1]);
-		ah.innerHTML = desc[number-1];
+		ah.innerHTML = desc[number-1];*/
+		
+		document.getElementById('testanno').style.opacity = 1.0;
 	}
 </script>
 	
 <model-viewer id="hotspot-demo" ar ar-modes="webxr" camera-controls src="./assets/model.glb" style="--poster-color:#ffffff00;" alt="A 3D model of a machine.">
   <button slot="ar-button">View in AR</button>	
   <button onclick="handleAnnotClick(2)" slot="hotspot-hand" data-position="-0.38 0.13 0.26" data-normal="0.43 0.15 0.88">2
-    
+    <div id="testanno" class="annotation">This annotation is fixed in screen-space</div>
   </button>
 <button onclick="handleAnnotClick(1)" slot="hotspot-some1" data-position="-0.1 -0.13 0.15" data-normal="-1 0 0">1
     
