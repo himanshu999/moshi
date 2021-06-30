@@ -115,10 +115,11 @@
 	
 	<script>
 		const desc = ['This is the description for annotation #1', 'This is the description for annotation #2', 'This is the description for annotation #3'];
-		var ah = document.getElementById('annotation-holder');
+		
 		let isAnnotDescBoxOpen = false;
 	
 	function handleAnnotClick(number){
+		let ah = document.getElementById('annotation-holder');
 		
 		if(!isAnnotDescBoxOpen) { ah.style.opacity = 1.0;  isAnnotDescBoxOpen = true; }
    		
