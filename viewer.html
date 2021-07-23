@@ -324,7 +324,7 @@
 
 		<script type="module">
 
-			import * as THREE from '../build/three.module.js';
+			import * as THREE from './build/three.module.js';
 
 			import { GLTFLoader } from './jsm/GLTFLoader.js';
 
@@ -335,18 +335,18 @@
 			let camera, controls, scene, renderer, pmremGenerator;
 
 			const annotations = [{number: 1, 
-					      desc: 'A 3HP motor is used to power this machine. The motor works really well and smooth, I believe!', 
-					      position: {x:-87, y: 20, z:19}, 
-					      camPos: {x:-165, y:47, z:42}}, 
+					      desc: 'Annotation #1 description', 
+					      position: {x:-33, y:29, z:-1}, 
+					      camPos: {x:108, y:84, z:0}},
 					{number: 2, 
-					      desc: 'This looks like a camera but it is not. Believe me.', 
-					      position: {x:-36, y:44, z:24}, 
-					      camPos: {x:-97, y:61, z:87}},
+					      desc: 'Annotation #2 description', 
+					      position: {x:-24, y:7, z:83}, 
+					      camPos: {x:50, y:28, z:165}},
 
 					{number: 3, 
-					      desc: 'This is a very important part of the machine. I do not have any clue why. I am just trying to make this description long.', 
-					      position: {x:79, y:42, z:8}, 
-					      camPos: {x:204, y:80, z:59}}
+					      desc: 'Annotation #3 description', 
+					      position: {x:-189, y:8, z:35}, 
+					      camPos: {x:-248, y:18, z:63}}
 					];
  
 
@@ -398,14 +398,15 @@
 
 				controls.minDistance = 100;
 				controls.maxDistance = 500;
-				controls.autoRotate = true;
+				//controls.autoRotate = true;
+				controls.autoRotateSpeed = 0.5;
 
 				//controls.maxPolarAngle = Math.PI / 2;
 
 
 
 				const loader = new GLTFLoader();
-				loader.load( './assets/model.glb', function ( gltf ) {
+				loader.load( './assets/servermodel/Untitled.gltf', function ( gltf ) {
 
 							/*gltf.scene.traverse( function ( child ) {
 
@@ -417,8 +418,8 @@
 
 							} ); */
 							
-							gltf.scene.scale.set(90,90,90);
-							gltf.scene.position.set(0,30,0);
+							//gltf.scene.scale.set(90,90,90);
+							//gltf.scene.position.set(0,30,0);
 
 							scene.add( gltf.scene );
 
@@ -558,7 +559,7 @@
 			function raycast(event){
 				
 				controls.autoRotate = false;
-				setTimeout(() => (controls.autoRotate = true), 4000);
+				//setTimeout(() => (controls.autoRotate = true), 8000);
 				
 				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
