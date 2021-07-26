@@ -335,18 +335,18 @@
 			let camera, controls, scene, renderer, pmremGenerator;
 
 			const annotations = [{number: 1, 
-					      desc: 'Annotation #1 description', 
+					      desc: ' Cores - 8 to 28 cores per processor', 
 					      position: {x:-33, y:29, z:-1}, 
 					      camPos: {x:108, y:84, z:0}},
 					{number: 2, 
-					      desc: 'Annotation #2 description', 
-					      position: {x:-24, y:7, z:83}, 
-					      camPos: {x:50, y:28, z:165}},
+					      desc: 'Memory - Upto 3 TB with (12 x 128 GB DDR4 per CPU)', 
+					      position: {x:-189, y:14, z:-43}, 
+					      camPos: {x:-252, y:34, z:-89}},
 
 					{number: 3, 
-					      desc: 'Annotation #3 description', 
-					      position: {x:-189, y:8, z:35}, 
-					      camPos: {x:-248, y:18, z:63}}
+					      desc: 'Ports - Embedded ethernet 4 x 1GbE LOM, 10 Gb FLOM', 
+					      position: {x:-189, y:21, z:10}, 
+					      camPos: {x:-267, y:39, z:10}}
 					];
  
 
@@ -398,7 +398,7 @@
 
 				controls.minDistance = 100;
 				controls.maxDistance = 500;
-				//controls.autoRotate = true;
+				controls.autoRotate = true;
 				controls.autoRotateSpeed = 0.5;
 
 				//controls.maxPolarAngle = Math.PI / 2;
@@ -559,7 +559,7 @@
 			function raycast(event){
 				
 				controls.autoRotate = false;
-				//setTimeout(() => (controls.autoRotate = true), 8000);
+				setTimeout(() => (controls.autoRotate = true), 8000);
 				
 				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
@@ -602,7 +602,7 @@
 				annotDescHolder.innerText = annotations[id].desc;
 
 				if(!isDescBoxOpen) {
-					gsap.fromTo(annotDescHolder, {height:0, opacity:0}, {duration: 1, opacity:1.0, height: '10rem', ease: "expo.out"});
+					gsap.fromTo(annotDescHolder, {height:0, opacity:0}, {duration: 1, opacity:1.0, height: '6rem', ease: "expo.out"});
 					isDescBoxOpen = true;	
 				}	
 				
