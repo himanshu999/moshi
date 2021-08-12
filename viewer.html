@@ -9,7 +9,9 @@
 		<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap" rel="stylesheet">
 		<link type="text/css" rel="stylesheet" href="./assets/main.css">
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
-		
+		<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-firestore.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-storage.js"></script>
 		<style>
 			body {
 				color: #000;
@@ -279,7 +281,38 @@
 			
 		</style>
 		<script>
-		 var camerag;
+		 var camerag, productData, annotations = [], showAnnotations = false;
+
+		 var firebaseConfig = {
+			    apiKey: "AIzaSyA7x5iVfkDlAiCx66eaC0DCsLSeC1c_oDs",
+			    authDomain: "liminal-49399.firebaseapp.com",
+			    projectId: "liminal-49399",
+			    storageBucket: "liminal-49399.appspot.com",
+			    messagingSenderId: "317204945906",
+			    appId: "1:317204945906:web:358f8f6f34c01abd10e96b"
+  		};
+  
+  		firebase.initializeApp(firebaseConfig);
+		var db = firebase.firestore();
+		var storage = firebase.storage();
+
+		db.collection("product").doc("YrWUPt8qt21M6HlEZ8aq").get().then((doc) => {
+				    if (doc.exists) {
+					console.log("Document data:", doc.data());
+					productData = doc.data();
+					annotations = JSON.parse(productData.annotations);
+
+					loadModelFile();
+					//createAnnotationMarkers();
+					//showAnnotations = true;
+				    } else {
+					// doc.data() will be undefined in this case
+					console.log("No such document!");
+					productData = undefined;
+				    }
+				}).catch((error) => {
+				    console.log("Error getting document:", error);
+			});
 		</script>
 	</head>
 
@@ -334,7 +367,7 @@
 
 			let camera, controls, scene, renderer, pmremGenerator;
 
-			const annotations = [{number: 1, 
+			/*const annotations = [{number: 1, 
 					      desc: ' Cores - 8 to 28 cores per processor', 
 					      position: {x:-33, y:29, z:-1}, 
 					      camPos: {x:108, y:84, z:0}},
@@ -347,12 +380,12 @@
 					      desc: 'Ports - Embedded ethernet 4 x 1GbE LOM, 10 Gb FLOM', 
 					      position: {x:-189, y:21, z:10}, 
 					      camPos: {x:-267, y:39, z:10}}
-					];
+					]; */
  
 
 			let adjustedCanvasWidth, adjustedCanvasHeight;
 			let meshPos;
-			let showAnnotations = false, annotDescHolder, isDescBoxOpen = false;
+			let annotDescHolder, isDescBoxOpen = false;
 			let mouse = {}, raycaster; 
 
 			init();
@@ -360,6 +393,8 @@
 			animate();
 
 			function init() {
+
+				
 
 				scene = new THREE.Scene();
 				//scene.background = new THREE.Color( 0xcccccc );
@@ -405,32 +440,11 @@
 
 
 
-				const loader = new GLTFLoader();
-				loader.load( './assets/servermodel/server2.glb', function ( gltf ) {
+				
 
-							/*gltf.scene.traverse( function ( child ) {
-
-								if ( child.isMesh ) {
-
-									//roughnessMipmapper.generateMipmaps( child.material );
-
-								}
-
-							} ); */
-							
-							//gltf.scene.scale.set(90,90,90);
-							//gltf.scene.position.set(0,30,0);
-
-							scene.add( gltf.scene );
-
-							//roughnessMipmapper.dispose();
-
-							meshPos = scene.children[0].position;
-							hideLoadingScreen();
-							createAnnotationMarkers();
-							showAnnotations = true;
-
-						} );
+				
+		
+				
 
 
 
@@ -464,6 +478,52 @@
 				window.addEventListener('pointerdown', raycast);
 
 			}
+
+			const loadModelFile = () => {
+
+				const loader = new GLTFLoader();
+
+				const gsReference = storage.refFromURL(productData.modelfile);
+
+				gsReference.getDownloadURL()
+				  .then((url) => {
+				    
+					loader.load( url, function ( gltf ) {
+
+							/*gltf.scene.traverse( function ( child ) {
+
+								if ( child.isMesh ) {
+
+									//roughnessMipmapper.generateMipmaps( child.material );
+
+								}
+
+							} ); */
+							
+							//gltf.scene.scale.set(90,90,90);
+							//gltf.scene.position.set(0,30,0);
+
+							scene.add( gltf.scene );
+
+							//roughnessMipmapper.dispose();
+
+							meshPos = scene.children[0].position;
+							hideLoadingScreen();
+							createAnnotationMarkers();
+							showAnnotations = true;
+
+						} );
+				 
+
+				    
+				  })
+				  .catch((error) => {
+				    console.log(error);
+				  });
+			
+			}
+
+			window.loadModelFile = loadModelFile;
 
 			function onWindowResize() {
 
