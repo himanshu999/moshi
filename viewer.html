@@ -281,7 +281,7 @@
 			
 		</style>
 		<script>
-		 var camerag, productData, annotations = [], showAnnotations = false;
+		 var camerag, productData, annotations = [];
 
 		 var firebaseConfig = {
 			    apiKey: "AIzaSyA7x5iVfkDlAiCx66eaC0DCsLSeC1c_oDs",
@@ -385,7 +385,7 @@
 
 			let adjustedCanvasWidth, adjustedCanvasHeight;
 			let meshPos;
-			let annotDescHolder, isDescBoxOpen = false;
+			let showAnnotations = false, annotDescHolder, isDescBoxOpen = false;
 			let mouse = {}, raycaster; 
 
 			init();
