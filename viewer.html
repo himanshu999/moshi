@@ -281,7 +281,7 @@
 			
 		</style>
 		<script>
-		 var camerag, productData, annotations = [];
+		 var camerag, productData, productID, annotations = [];
 
 		 var firebaseConfig = {
 			    apiKey: "AIzaSyA7x5iVfkDlAiCx66eaC0DCsLSeC1c_oDs",
@@ -295,8 +295,9 @@
   		firebase.initializeApp(firebaseConfig);
 		var db = firebase.firestore();
 		var storage = firebase.storage();
+		productID = window.location.search.split('?id=')[1];
 
-		db.collection("product").doc("YrWUPt8qt21M6HlEZ8aq").get().then((doc) => {
+		db.collection("product").doc(productID).get().then((doc) => {
 				    if (doc.exists) {
 					console.log("Document data:", doc.data());
 					productData = doc.data();
@@ -417,7 +418,7 @@
 
 
 				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
-				camera.position.set( 400, 200, 0 );
+				//camera.position.set( 400, 200, 0 );
 				camerag = camera;
 
 				// controls
@@ -431,8 +432,8 @@
 
 				controls.screenSpacePanning = false;
 
-				controls.minDistance = 100;
-				controls.maxDistance = 500;
+				//controls.minDistance = 1;
+				//controls.maxDistance = 500;
 				controls.autoRotate = true;
 				controls.autoRotateSpeed = 0.5;
 
@@ -481,9 +482,11 @@
 
 			const loadModelFile = () => {
 
-				const loader = new GLTFLoader();
+				 camera.position.copy(JSON.parse(productData.initialCamPos));
 
-				const gsReference = storage.refFromURL(productData.modelfile);
+				const loader = new GLTFLoader();
+				
+				const gsReference = storage.refFromURL(productData.modelFile);
 
 				gsReference.getDownloadURL()
 				  .then((url) => {
