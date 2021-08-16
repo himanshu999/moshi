@@ -303,7 +303,9 @@
 					productData = doc.data();
 					annotations = JSON.parse(productData.annotations);
 
-					loadModelFile();
+					setTimeout(() => {
+						loadModelFile();
+					}, 1000);
 					//createAnnotationMarkers();
 					//showAnnotations = true;
 				    } else {
