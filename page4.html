@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Moshi Moshi</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap" rel="stylesheet">
+		<link type="text/css" rel="stylesheet" href="./assets/main.css">
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.0/gsap.min.js"></script>
+		<script src="./jsm/lottie_canvas.js"></script>
+
+		<style>
+			body {
+				color: #000;
+				overflow-x:hidden;
+				overflow-y:hidden;
+				font-family: 'Nunito', sans-serif;
+				background-color: #fafeff;
+				background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1600 800'%3E%3Cg fill-opacity='0.54'%3E%3Cpath fill='%23d7f0fe' d='M486 705.8c-109.3-21.8-223.4-32.2-335.3-19.4C99.5 692.1 49 703 0 719.8V800h843.8c-115.9-33.2-230.8-68.1-347.6-92.2C492.8 707.1 489.4 706.5 486 705.8z'/%3E%3Cpath fill='%23b6d8fb' d='M1600 0H0v719.8c49-16.8 99.5-27.8 150.7-33.5c111.9-12.7 226-2.4 335.3 19.4c3.4 0.7 6.8 1.4 10.2 2c116.8 24 231.7 59 347.6 92.2H1600V0z'/%3E%3Cpath fill='%2396b7f5' d='M478.4 581c3.2 0.8 6.4 1.7 9.5 2.5c196.2 52.5 388.7 133.5 593.5 176.6c174.2 36.6 349.5 29.2 518.6-10.2V0H0v574.9c52.3-17.6 106.5-27.7 161.1-30.9C268.4 537.4 375.7 554.2 478.4 581z'/%3E%3Cpath fill='%23798fee' d='M0 0v429.4c55.6-18.4 113.5-27.3 171.4-27.7c102.8-0.8 203.2 22.7 299.3 54.5c3 1 5.9 2 8.9 3c183.6 62 365.7 146.1 562.4 192.1c186.7 43.7 376.3 34.4 557.9-12.6V0H0z'/%3E%3Cpath fill='%235e63e5' d='M181.8 259.4c98.2 6 191.9 35.2 281.3 72.1c2.8 1.1 5.5 2.3 8.3 3.4c171 71.6 342.7 158.5 531.3 207.7c198.8 51.8 403.4 40.8 597.3-14.8V0H0v283.2C59 263.6 120.6 255.7 181.8 259.4z'/%3E%3Cpath fill='%237e82ea' d='M1600 0H0v136.3c62.3-20.9 127.7-27.5 192.2-19.2c93.6 12.1 180.5 47.7 263.3 89.6c2.6 1.3 5.1 2.6 7.7 3.9c158.4 81.1 319.7 170.9 500.3 223.2c210.5 61 430.8 49 636.6-16.6V0z'/%3E%3Cpath fill='%239ea1ef' d='M454.9 86.3C600.7 177 751.6 269.3 924.1 325c208.6 67.4 431.3 60.8 637.9-5.3c12.8-4.1 25.4-8.4 38.1-12.9V0H288.1c56 21.3 108.7 50.6 159.7 82C450.2 83.4 452.5 84.9 454.9 86.3z'/%3E%3Cpath fill='%23bfc1f5' d='M1600 0H498c118.1 85.8 243.5 164.5 386.8 216.2c191.8 69.2 400 74.7 595 21.1c40.8-11.2 81.1-25.2 120.3-41.7V0z'/%3E%3Cpath fill='%23dfe0fa' d='M1397.5 154.8c47.2-10.6 93.6-25.3 138.6-43.8c21.7-8.9 43-18.8 63.9-29.5V0H643.4c62.9 41.7 129.7 78.2 202.1 107.4C1020.4 178.1 1214.2 196.1 1397.5 154.8z'/%3E%3Cpath fill='%23ffffff' d='M1315.3 72.4c75.3-12.6 148.9-37.1 216.8-72.4h-723C966.8 71 1144.7 101 1315.3 72.4z'/%3E%3C/g%3E%3C/svg%3E");
+				background-attachment: fixed;
+				background-repeat:repeat;
+				background-size: cover;
+				background-position: center center;
+			}
+
+			.frame {
+			  position: absolute;
+			  top: 35%;
+			  left: 50%;
+			  width: 400px;
+			  height: 400px;
+			  margin-top: -200px;
+			  margin-left: -200px;
+			  border-radius: 2px;
+			  z-index:600;
+			  color: #fff;
+			  opacity:0;
+			  transition: opacity 0.9s ease-in-out;
+			}
+
+			
+		</style>
+		<script>
+		 var camerag, sceneg, meshg, rendererg;
+
+		</script>
+	</head>
+
+	<body>
+		<!--<div id="splash"></div>-->
+
+		<!--<video id="video" loop crossOrigin="anonymous" playsinline style="display:none">
+			<source src="assets/dhvideo.mp4" type='video/mp4'>
+		</video>-->
+
+
+		<script type="module">
+
+			import * as THREE from './build/three.module.js';
+
+			import { OrbitControls } from './jsm/OrbitControls.js';
+            import { SVGLoader } from './jsm/SVGLoader.js';
+			import { LottieLoader } from './jsm/LottieLoader.js';
+			import { TransformControls } from './jsm/TransformControls.js';
+
+			import { EffectComposer } from './jsm/EffectComposer.js';
+			import { RenderPass } from './jsm/RenderPass.js';
+			import { UnrealBloomPass } from './jsm/UnrealBloomPass.js';
+
+			//import { OBJLoader } from './jsm/loaders/OBJLoader.js';
+
+			let container, stats;
+
+			let camera, scene, renderer, composer;
+
+			let controls, bloomPass;
+
+			let pointLight;
+
+			const raycaster = new THREE.Raycaster();
+			const pointer = new THREE.Vector2();
+
+			const params = {
+				exposure: 0.4,
+				bloomStrength: 1.6,
+				bloomThreshold: 0.35,
+				bloomRadius: 1.0
+			}; 
+
+			let path = './assets/cube/MilkyWay/dark-s_';
+			let format = '.jpg';
+			let urls = [
+					path + 'px' + format, path + 'nx' + format,
+					path + 'py' + format, path + 'ny' + format,
+					path + 'pz' + format, path + 'nz' + format
+				];
+
+			const darkSkyCube = new THREE.CubeTextureLoader().load( urls );
+
+			init();
+			animate();
+
+		
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 5000 );
+				//camera.position.z = 1000;
+                camera.position.set(-2,2,-189);
+                camera.lookAt(0.011, -0.014, 0.999);
+				camerag = camera;
+
+				//cubemap
+				path = './assets/cube/SwedishRoyalCastle/';
+				format = '.jpg';
+				urls = [
+					path + 'px' + format, path + 'nx' + format,
+					path + 'py' + format, path + 'ny' + format,
+					path + 'pz' + format, path + 'nz' + format
+				];
+
+                const eqTexture = new THREE.TextureLoader().load( 'assets/moshieq1.png' );
+                eqTexture.mapping = THREE.EquirectangularReflectionMapping;
+
+                //const video = document.getElementById( 'video' );
+                //video.play();
+                //const videoTex = new THREE.VideoTexture( video );
+                //videoTex.mapping =  THREE.EquirectangularReflectionMapping;
+
+				//const reflectionCube = new THREE.CubeTextureLoader().load( urls );
+
+				
+				//const refractionCube = new THREE.CubeTextureLoader().load( urls );
+				//refractionCube.mapping = THREE.CubeRefractionMapping;
+
+
+				scene = new THREE.Scene();
+				scene.background = eqTexture;
+				sceneg = scene;
+
+				//lights
+				const ambient = new THREE.AmbientLight( 0xffffff, 10.0 );
+				scene.add( ambient );
+
+				/*pointLight = new THREE.PointLight( 0xffffff, 2 );
+				scene.add( pointLight );*/
+
+				
+				//renderer
+				renderer = new THREE.WebGLRenderer({antialias: true});
+				rendererg = renderer;
+				renderer.toneMapping = THREE.ReinhardToneMapping;
+				//renderer.toneMappingExposure = 1.0;
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				//controls
+			    controls = new OrbitControls( camera, renderer.domElement );
+				controls.enableZoom = true;
+				controls.enablePan = false;
+				//controls.minPolarAngle = Math.PI / 4;
+				//controls.maxPolarAngle = Math.PI / 1.5;
+
+
+				const renderScene = new RenderPass( scene, camera );
+
+				bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+				bloomPass.threshold = params.bloomThreshold;
+				bloomPass.strength = params.bloomStrength;
+				bloomPass.radius = params.bloomRadius;
+
+				composer = new EffectComposer( renderer );
+				composer.addPass( renderScene );
+				composer.addPass( bloomPass );
+				
+				
+				const tControl = new TransformControls( camera, renderer.domElement );
+				tControl.addEventListener( 'change', render );
+
+				tControl.addEventListener( 'dragging-changed', function ( event ) {
+
+					tControls.enabled = ! event.value;
+
+				} );
+
+                
+
+                //create a sphere
+                const geometry = new THREE.SphereGeometry( 500, 60, 60 );
+                geometry.scale( - 1, 1, 1 );
+                const material = new THREE.MeshBasicMaterial( { } );
+                const sphere = new THREE.Mesh( geometry, material );
+                scene.add( sphere );
+
+
+
+
+				/*const lottieLoader = new LottieLoader();
+				lottieLoader.setQuality( 5 );
+				lottieLoader.load( './assets/stars5.json', function ( texture ) {
+
+					//setupControls( texture.animation );
+
+					// texture = new THREE.TextureLoader().load( 'textures/uv_grid_directx.jpg' );
+					texture.animation.setSpeed(0.1);
+					//texture.animation.goToAndStop(30, true);
+
+					const geometry = new THREE.PlaneGeometry( 1000, 1000 );
+					const material = new THREE.MeshStandardMaterial( { roughness: 0.1, map: texture, transparent: true, side: THREE.DoubleSide, alphaTest : 0.5 } );
+					const mesh = new THREE.Mesh( geometry, material );
+					mesh.position.set(-573 * 3.0 ,891 * 3.0 ,171 * 3.0);
+					mesh.rotation.set(1.56, 0.52, -0.21);
+					mesh.scale.set(1.2, 1.2, 1.2);
+					scene.add( mesh );
+
+
+					const mesh2 = new THREE.Mesh( geometry, material );
+					meshg = mesh2;
+					mesh2.position.set(2000 ,2000 ,1000);
+					mesh2.rotation.set(-1.17, 0.55, 1.31);
+					mesh2.scale.set(1.3,1.3,1.3);
+					scene.add(mesh2);
+
+					
+					//camera.position.set(805, 203, -556);
+
+					//gsap.to(camera.position, {x: -579, y: 174, z: 794, duration: 10.0, ease: "expo.out"});
+
+					//createInnerPage1();
+
+					//controls.update();
+					//render();
+
+					//tControl.attach( mesh2 );
+					
+					//scene.add( tControl );
+
+				} ); */
+
+
+				//window.addEventListener( 'pointerdown', onPointerDown );
+
+				window.addEventListener( 'resize', onWindowResize );
+
+				window.addEventListener( 'keydown', function ( event ) {
+
+					switch ( event.keyCode ) {
+
+						case 81: // Q
+							tControl.setSpace( control.space === 'local' ? 'world' : 'local' );
+							break;
+
+						case 16: // Shift
+						tControl.setTranslationSnap( 100 );
+						tControl.setRotationSnap( THREE.MathUtils.degToRad( 15 ) );
+						tControl.setScaleSnap( 0.25 );
+							break;
+
+						case 87: // W
+						tControl.setMode( 'translate' );
+							break;
+
+						case 69: // E
+						tControl.setMode( 'rotate' );
+							break;
+
+						case 82: // R
+						tControl.setMode( 'scale' );
+							break;
+
+						case 107: // +, =, num+
+						tControl.setSize( tControl.size + 0.1 );
+							break;
+
+						case 189:
+						case 109: // -, _, num-
+						tControl.setSize( Math.max( tControl.size - 0.1, 0.1 ) );
+							break;
+
+						case 88: // X
+						tControl.showX = ! tControl.showX;
+							break;
+
+						case 89: // Y
+						tControl.showY = ! tControl.showY;
+							break;
+
+						case 90: // Z
+						tControl.showZ = ! tControl.showZ;
+							break;
+
+						case 32: // Spacebar
+						tControl.enabled = ! tControl.enabled;
+							break;
+
+						case 27: // Esc
+						tControl.reset();
+							break;
+
+					}
+
+					} );
+
+
+					window.addEventListener( 'keyup', function ( event ) {
+
+						switch ( event.keyCode ) {
+
+							case 16: // Shift
+							tControl.setTranslationSnap( null );
+							tControl.setRotationSnap( null );
+							tControl.setScaleSnap( null );
+								break;
+
+						}
+
+						} );
+
+			}
+
+			function onPointerDown( event ) {
+
+				// calculate pointer position in normalized device coordinates
+				// (-1 to +1) for both components
+
+				pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+				raycaster.setFromCamera( pointer, camera );
+
+				// calculate objects intersecting the picking ray
+				const intersects = raycaster.intersectObjects( scene.children );
+
+				if(intersects.length > 0) {
+					console.log(intersects[0]);
+
+					const tex = intersects[0].object.material.map;
+					const textureAnimation = tex.animation;
+
+					/*textureAnimation.goToAndStop(0 , true);
+					textureAnimation.setSpeed(1.0);
+					textureAnimation.play();
+					
+					setTimeout(() => {
+						textureAnimation.goToAndStop(90, true);
+					}, 6000)*/
+
+					gsap.to(renderer, { toneMappingExposure: 0, duration:1.5, ease:"expo.out", onComplete: () => {
+						
+						
+						createInnerPage1();
+
+						//showAnnotations = true;	
+						//controls.target.set(annotations[id].position.x, annotations[id].position.y, annotations[id].position.z );
+						//gsap.fromTo(annotDescHolder, {height:0, opacity:0}, {duration: 0.9, opacity:1.0, height: '12rem', ease: "expo.out"});			
+					}});
+
+					gsap.to(camera.position, {x: 1000, y:1000, z:500, duration: 2.0, ease: "expo.out", onComplete: () => {
+
+						
+						controls.update();
+						
+						gsap.to(renderer, { toneMappingExposure: 0.9, duration: 5.0, ease: "expo.out", onComplete: () => {
+							
+						}});
+
+						gsap.to(camera.position, {x:-527, y: 285, z: 730, duration: 4.0, ease: "expo.out", onUpdate: () => {
+								console.log('its updating');
+
+								camera.lookAt(0,0,0);
+							}, onComplete: () => {
+
+								
+								controls.enableZoom = true;
+								controls.update();
+								
+						}});
+
+						bloomPass.strength = 1.1;
+						bloomPass.bloomRadius = 2.0; 
+					
+					}
+				});
+
+					//createInnerPage1();
+
+					
+				}
+
+			}
+
+
+			function createInnerPage1(cubeTexture) {
+
+				scene.clear();
+				scene.background = darkSkyCube;
+
+				//create light and add to scene again
+				const ambient = new THREE.AmbientLight( 0xffffff, 0.5 );
+				scene.add( ambient );
+
+				const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.9 );
+				directionalLight.position.set(-1, 1, 0)
+				scene.add( directionalLight );
+
+
+				const moonTexture = new THREE.TextureLoader().load( './assets/moon.jpg' );
+
+				//create a sphere mesh and add to scene
+				let geometry = new THREE.SphereGeometry( 100, 30, 30 );
+				let material = new THREE.MeshStandardMaterial( { roughness: 0.5, map: moonTexture } );
+				let mesh = new THREE.Mesh( geometry, material );
+				mesh.position.set(400, 100, 100);
+				scene.add(mesh);
+
+				geometry = new THREE.SphereGeometry( 70, 30, 30 );
+				material = new THREE.MeshStandardMaterial( { roughness: 0.5, map: moonTexture } );
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.position.set(400, 100, -300);
+				scene.add(mesh);
+
+				geometry = new THREE.SphereGeometry( 70, 30, 30 );
+				material = new THREE.MeshStandardMaterial( { roughness: 0.5, map: moonTexture } );
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.position.set(-400, 100, -300);
+
+				meshg = mesh;
+				scene.add(mesh);
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				composer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				render();
+
+			}
+
+			function render() {
+
+				renderer.render( scene, camera );
+
+				//composer.render();
+				//stats.update();
+
+			}
+
+
+		</script>
+
+	</body>
+</html>
+
