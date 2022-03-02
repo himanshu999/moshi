@@ -109,6 +109,11 @@
         margin: 5px 2px 5px 3px;
     }
 
+    .circles-hldr img{
+        width: 54px;
+        height: 54px;
+    }
+
 			
 		</style>
 		<script>
@@ -124,30 +129,7 @@
             <div class="desc-wrapper">
                 <div class="desc">This is some randome description</div>
                 <div class="circles-hldr">
-                    <div class="row">
-                        <span class="circle"></span>
-                        <span class="circle"></span>
-                        <span class="circle"></span>
-                        <span class="circle"></span>
-                    </div>
-                    <div class="row">
-                        <span class="circle"></span>
-                        <span class="circle"></span>
-                        <span class="circle"></span>
-                        <span class="circle"></span>
-                    </div>
-                    <div class="row">
-                        <span class="circle"></span>
-                        <span class="circle"></span>
-                        <span class="circle"></span>
-                        <span class="circle"></span>
-                    </div>
-                    <div class="row">
-                        <span class="circle"></span>
-                        <span class="circle"></span>
-                        <span class="circle"></span>
-                        <span class="circle"></span>
-                    </div>
+                    <img src='./assets/dots.gif' />
                     
                 </div>
             </div>
@@ -197,6 +179,7 @@
             descWrapper,
             descTitle,
             descDesc,
+            isDescVisible = false,
             isDragging = false,
             blobScale = 3;
 
@@ -354,15 +337,21 @@
 
 
                 const loader = new THREE.TextureLoader();
+                const lottieLoader = new LottieLoader();
+				lottieLoader.setQuality( 5 );
+
                 const textureSphereBg = loader.load('./assets/moshieq1.jpg');
 
-                const constellation1Tex = loader.load('./assets/constellations/1.png');
+                //const constellation1Tex = loader.load('./assets/constellations/1.png');
+                //constellations[0].map = constellation1Tex;
+                
+                const constellation1Tex = lottieLoader.load('./assets/constellations/1.json');
                 constellations[0].map = constellation1Tex;
-                const constellation2Tex = loader.load('./assets/constellations/2.png');
+                const constellation2Tex = lottieLoader.load('./assets/constellations/2.json');
                 constellations[1].map = constellation2Tex;
-                const constellation3Tex = loader.load('./assets/constellations/3.png');
+                const constellation3Tex = lottieLoader.load('./assets/constellations/3.json');
                 constellations[2].map = constellation3Tex;
-                const constellation4Tex = loader.load('./assets/constellations/4.png');
+                const constellation4Tex = lottieLoader.load('./assets/constellations/4.json');
                 constellations[3].map = constellation4Tex;
 
                 const bg1Tex = loader.load('./assets/constellations/bg1.png');
@@ -527,8 +516,8 @@
                     
                     planes.forEach((plane) => {
                         plane.quaternion.copy(camera.quaternion);
-                        plane.material.opacity = THREE.MathUtils.clamp(Math.abs(Math.cos(Math.PI * periodicAnimationCounter)), 0.3, 1.0); 
-                        plane.material.needsUpdate = true;
+                        //plane.material.opacity = THREE.MathUtils.clamp(Math.abs(Math.cos(Math.PI * periodicAnimationCounter)), 0.3, 1.0); 
+                        //plane.material.needsUpdate = true;
                         
                     });
 
@@ -540,7 +529,7 @@
 
                 }
 
-                if(selectedObjectIndex !== -1){
+                if(isDescVisible && selectedObjectIndex !== -1){
                         const ssbb = computeScreenSpaceBoundingBox2(planes[selectedObjectIndex]);
                         descWrapper.style.left = Math.floor(ssbb.max.x) + 'px';
                         descWrapper.style.bottom = Math.floor(ssbb.min.y) + 'px';   
@@ -588,7 +577,7 @@
 
             function handleRaycast(event){
                 
-                if(!isDragging && bloomAnimationCounter % 10 == 0){
+                if(!isDragging){
                     pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
                     pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
@@ -602,16 +591,18 @@
                         
                         const clickedMesh = intersects[0].object;
 
-                       
+                        
                         
                         if(clickedMesh.name.startsWith('constel') && clickedMesh.userData.index !== selectedObjectIndex){
                            
                             
                             descWrapper.style.opacity = 0;
+                            isDescVisible = false;
                            
                             setTimeout(() => {
                                 descWrapper.style.opacity = 1.0;
-                            }, 2000);
+                                isDescVisible = true;
+                            }, 3000);
                             
                             
                             selectedObjectIndex = clickedMesh.userData.index;
