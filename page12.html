@@ -54,6 +54,56 @@
         top: 40%;
         left: 50%;
         transform: translate(-50%);
+        display: none;
+    }
+
+    #desc-hldr{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 14rem;
+        opacity: 0;
+        transform: all 0.3s ease-in-out;
+        /* font-weight: bold; */
+        color: white;
+    }
+
+    #desc-hldr .title{
+        margin: 0.4rem 0;
+        font-size: 1.5rem;
+        line-height: 1.75rem;
+        font-weight: 600;
+    }
+
+    .divider{
+        width: 100%;
+        height: 1px;
+        background: #ffffff;
+        border-radius: 6px;
+    }
+
+    #desc-hldr .desc{
+        padding: 0.4rem 0.4rem 0 0;
+        font-size: 0.9rem;
+        line-height: 1.2rem;
+    }
+
+    .desc-wrapper{
+        display: flex;
+    }
+
+    .circles-hldr{
+        display: flex;
+        padding-top: 0.4rem;
+    }
+
+    .circles-hldr .circle{
+        background: white;
+        width: 8px;
+        height: 8px;
+        border-radius: 19px;
+        display: flex;
+        margin: 5px 2px 5px 3px;
     }
 
 			
@@ -65,11 +115,41 @@
 	</head>
 
 	<body>
-		<!--<div id="splash"></div>-->
-
-		<!--<video id="video" loop crossOrigin="anonymous" playsinline style="display:none">
-			<source src="assets/dhvideo.mp4" type='video/mp4'>
-		</video>-->
+		<div id="desc-hldr">
+            <h2 class="title">BUSINESS PROCESSES SUITE</h2>
+            <div class="divider"></div>
+            <div class="desc-wrapper">
+                <div class="desc">This is some randome description</div>
+                <div class="circles-hldr">
+                    <div class="row">
+                        <span class="circle"></span>
+                        <span class="circle"></span>
+                        <span class="circle"></span>
+                        <span class="circle"></span>
+                    </div>
+                    <div class="row">
+                        <span class="circle"></span>
+                        <span class="circle"></span>
+                        <span class="circle"></span>
+                        <span class="circle"></span>
+                    </div>
+                    <div class="row">
+                        <span class="circle"></span>
+                        <span class="circle"></span>
+                        <span class="circle"></span>
+                        <span class="circle"></span>
+                    </div>
+                    <div class="row">
+                        <span class="circle"></span>
+                        <span class="circle"></span>
+                        <span class="circle"></span>
+                        <span class="circle"></span>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
 
         <button id="start-button" onclick="handleEnterClick()">Enter</button>
 
@@ -108,6 +188,10 @@
             //noise = new SimplexNoise(),
             cameraSpeed = 0,
             bloomAnimationCounter = 0,
+            materialSphereBg,
+            originPos,
+            planeMesh,
+            descWrapper,
             blobScale = 3;
 
             let raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3());
@@ -125,8 +209,58 @@
 				bloomThreshold: 0.963,
                 bloomStrength: 0.381,
 				bloomRadius: 0.26,
+                distance: 100,
 			}; 
 
+            const starsPos = [{
+                x: 498, 
+                y: 468,
+                z: 698,
+            },{
+                x: 845, 
+                y: 91,
+                z: -285,
+            },{
+                x: -536, 
+                y: -146,
+                z: -632,
+            },
+            {
+                x: 217, 
+                y: 585,
+                z: -782,
+            } 
+            ];
+
+            const constellations = [{
+                scale: {x: 15, y:15, z:15},
+                position: {x:-449, y:-110, z:-454},
+                name: 'constel1',
+                camPos: {x: 311, y:2, z: 264 },
+                camLook: {x: -0.76, y: -6.12, z: - 0.64}
+            },{
+                scale: {x: 15, y:15, z:15},
+                position: {x:156, y:469, z:-539},
+                name: 'constel2',
+                camPos: {x: -127 , y:-187, z: 339 },
+                camLook: {x: 0.31, y: 0.45, z: -0.83}
+            },
+            {
+                scale: {x: 15, y:15, z:15},
+                position: {x:718, y:85, z:-197},
+                name: 'constel3',
+                camPos: {x: -403, y:-20, z: 59 },
+                camLook: {x: 0.98, y: 0.05, z: -0.14}
+            },
+            {
+                scale: {x: 15, y:15, z:15},
+                position: {x:295, y:316, z:568},
+                name: 'constel4',
+                camPos: {x: -144, y:-102, z: -368 },
+                camLook: {x: 0.35, y: 0.25, z: 0.90}
+            }];
+
+            const planes = [];
 
             init();
             animate();
@@ -137,9 +271,11 @@
                 scene = new THREE.Scene();
                 sceneg = scene;
 
-                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-                camera.position.set(0, 0, 0);
-                camera.lookAt(0.71, 0.17, 0.67);
+                originPos = {x: 182, y: 2, z: 366};
+
+                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+                camera.position.set(originPos.x, originPos.y, originPos.z);
+                camera.lookAt(-0.44, -6.12, -0.89);
                 camerag = camera;
 
                 const directionalLight = new THREE.DirectionalLight("#fff", 2);
@@ -163,16 +299,21 @@
                 container.appendChild(renderer.domElement);
 
                 //OrbitControl
-                /*controls = new OrbitControls(camera, renderer.domElement);
+                controls = new OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
                 //controls.autoRotate = true;
                 //controls.autoRotateSpeed = 4;
                 //controls.maxDistance = 450;
                 //controls.minDistance = 150;
-                controls.enablePan = false;*/
+                //controls.enablePan = false;
+                //controls.enableZoom = false;
+                //controls.enabled = false;
+                controls.maxPolarAngle = Math.PI / 1.5;
+                controls.minPolarAngle = Math.PI / 2.0;
 
                 plControls = new PointerLockControls( camera, renderer.domElement);
 
-                scene.add( plControls.getObject() );
+                //scene.add( plControls.getObject() );
 
                 
 
@@ -199,7 +340,7 @@
 
 
                 const loader = new THREE.TextureLoader();
-                const textureSphereBg = loader.load('./assets/moshieq1.png');
+                const textureSphereBg = loader.load('./assets/moshieq1.jpg');
                 /*const texturenucleus = loader.load('https://i.ibb.co/hcN2qXk/star-nc8wkw.jpg');
                 const textureStar = loader.load("https://i.ibb.co/ZKsdYSz/p1-g3zb2a.png");
                 const texture1 = loader.load("https://i.ibb.co/F8by6wW/p2-b3gnym.png");  
@@ -207,9 +348,13 @@
                 const texture4 = loader.load("https://i.ibb.co/yWfKkHh/p4-avirap.png");*/
 
                 const constellation1Tex = loader.load('./assets/constellations/1.png');
+                constellations[0].map = constellation1Tex;
                 const constellation2Tex = loader.load('./assets/constellations/2.png');
+                constellations[1].map = constellation2Tex;
                 const constellation3Tex = loader.load('./assets/constellations/3.png');
+                constellations[2].map = constellation3Tex;
                 const constellation4Tex = loader.load('./assets/constellations/4.png');
+                constellations[3].map = constellation4Tex;
 
                 const bg1Tex = loader.load('./assets/constellations/bg1.png');
                 bgTextures.push(bg1Tex);
@@ -233,14 +378,24 @@
 
                 /*    Sphere  Background   */
                 textureSphereBg.anisotropy = 32;
-                let geometrySphereBg = new THREE.SphereBufferGeometry(900, 40, 40);
-                let materialSphereBg = new THREE.MeshBasicMaterial({
+                let geometrySphereBg = new THREE.SphereBufferGeometry(900, 60, 60);
+                materialSphereBg = new THREE.MeshBasicMaterial({
                     side: THREE.BackSide,
                     map: textureSphereBg,
                 });
                 sphereBg = new THREE.Mesh(geometrySphereBg, materialSphereBg);
+                sphereBg.position.y += 200;
                 scene.add(sphereBg);
 
+
+                const planeGeometry = new THREE.PlaneGeometry( 30, 30 );
+                const planeMaterial = new THREE.MeshBasicMaterial( { map: constellation1Tex, transparent: true} );
+                planeMesh = new THREE.Mesh( planeGeometry, planeMaterial );
+                //scene.add( planeMesh );
+
+                createConstellations();
+
+                //calculateStarsPosition();
 
                 /*    Moving Stars   */
                 /*let starsGeometry = new THREE.Geometry();
@@ -268,86 +423,31 @@
                 stars = new THREE.Points(starsGeometry, starsMaterial);
                 scene.add(stars); */
 
-                let index = 0;
-                const modelLoader = new GLTFLoader();
+                
 
-                modelLoader.load(
-                        './assets/planes.glb',
-                        function ( gltf ) {
 
-                            const model = gltf.scene;
-                            model.name = 'objectGroup';
-                            meshg = model;
-                            model.traverse((child) => {
-                                
-                                if(child.isMesh){
-                                    /*child.scale.x *= 0.05;
-                                    child.scale.y *= 0.05;
-                                    child.scale.z  *= 0.05;*/
-                                    //child.position.x *= 100;
-                                    //child.position.z *= 100;
+                function createConstellations(){
 
-                                    child.material = starMat;
+                    let index = 0;
 
-                                    if(child.name === 'plane1'){
-                                        child.material.map = constellation1Tex;
-                                    }
+                    constellations.forEach((constellation) => {
+                        const planeGeo = new THREE.PlaneGeometry(30,30);
+                        const mat = new THREE.MeshBasicMaterial({ transparent: true, map: constellation.map});
 
-                                    if(child.name === 'plane2'){
-                                        child.material.map = constellation2Tex;
-                                    }
+                        const planeMesh = new THREE.Mesh(planeGeo, mat);
+                        planeMesh.name = constellation.name;
+                        planeMesh.userData.index = index;
+                        planeMesh.scale.set(constellation.scale.x, constellation.scale.y, constellation.scale.z);
+                        planeMesh.position.set(constellation.position.x, constellation.position.y, constellation.position.z);
+                        
+                        planeMesh.userData.vertices = createVerticesArray(planeGeo.attributes.position.array);
 
-                                    if(child.name === 'plane3'){
-                                        child.material.map = constellation3Tex;
-                                    }
+                        planes.push(planeMesh);
+                        scene.add(planeMesh);
+                        index++;
+                    });
 
-                                    if(child.name === 'plane4'){
-                                        child.material.map = constellation4Tex;
-                                    }
-
-                                    if(child.name === 'plane5'){
-                                        child.scale.set(0,0,0);
-                                    }
-
-                                    child.userData.index = index;
-                                    child.userData.name = child.name;
-                                    index++;
-
-                                    child.material.needsUpdate = true;
-                                }
-                            });
-
-                            model.scale.set(10,10,10);
-                            //gltf.scene.position.x *= 50;
-                            //gltf.scene.position.z *= 50;
-                            model.position.y = -100;
-
-                            model2 = model.clone();
-                            model2.renderOrder = -1;
-
-                            model2.traverse((child) => {
-                                if(child.isMesh){
-                                    child.material = new THREE.MeshBasicMaterial({ map: transparentTex, transparent: true, opacity: 0});
-                                }
-                            })
-
-                            scene.add( model );
-                            scene.add(model2);
-
-                        },
-                        // called while loading is progressing
-                        function ( xhr ) {
-
-                            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-
-                        },
-                        // called when loading has errors
-                        function ( error ) {
-
-                            console.log( 'An error happened' );
-
-                        }
-                    );
+                }    
 
 
                 /*    Fixed Stars   */
@@ -381,31 +481,7 @@
                 }
 
 
-                const gui = new GUI();
-
-				gui.add( params, 'exposure', 0.1, 2 ).onChange( function ( value ) {
-
-					renderer.toneMappingExposure = Math.pow( value, 4.0 );
-
-				} );
-
-				gui.add( params, 'bloomThreshold', 0.0, 1.0 ).onChange( function ( value ) {
-
-					bloomPass.threshold = Number( value );
-
-				} );
-
-				gui.add( params, 'bloomStrength', 0.0, 3.0 ).onChange( function ( value ) {
-
-					bloomPass.strength = Number( value );
-
-				} );
-
-				gui.add( params, 'bloomRadius', 0.0, 1.0 ).step( 0.01 ).onChange( function ( value ) {
-
-					bloomPass.radius = Number( value );
-
-				} );
+                descWrapper = document.getElementById('desc-hldr');
             }
 
 
@@ -448,20 +524,10 @@
                //raycasting
 
                if(bloomAnimationCounter % 50 == 0){
-                /*
-                raycaster.ray.origin.copy(camera.position);
-                raycaster.ray.direction.copy(camera.target.sub(camera.position).normalize());
-
-                const intersects = raycaster.intersectObjects(scene.children, true);
-
-                if(intersects.length > 0){
-                    console.log(intersects[0]);
-                    //if(intersects[0].object.name && intersects[0].object.userData.index !== selectedObjectIndex)
-                    //handleRaycast2(intersects[0].object.userData);
-                }
-               */
                 
-            }
+                    
+                
+               }
                
 
 
@@ -482,18 +548,28 @@
                         starMat.opacity += 0.2;
                     }*/
 
-                    starMat.opacity = THREE.MathUtils.clamp(Math.abs(Math.cos(Math.PI * periodicAnimationCounter)), 0.3, 1.0);
+                    //starMat.opacity = THREE.MathUtils.clamp(Math.abs(Math.cos(Math.PI * periodicAnimationCounter)), 0.3, 1.0);
                     //console.log(periodicAnimationCounter);
                     //console.log(Math.abs(Math.cos(Math.PI * periodicAnimationCounter)));
                     //Math.cos(periodicAnimationCounter);
-                    starMat.needsUpdate = true;
-                    periodicAnimationCounter += 0.015;
+                    //starMat.needsUpdate = true;
+                    
+                    planes.forEach((plane) => {
+                        plane.quaternion.copy(camera.quaternion);
+                        plane.material.opacity = THREE.MathUtils.clamp(Math.abs(Math.cos(Math.PI * periodicAnimationCounter)), 0.3, 1.0); 
+                        plane.material.needsUpdate = true;
+                    });
+
+                    periodicAnimationCounter += 0.01;
+                    
+                    //planeMesh.quaternion.copy(camera.quaternion);
+
 
                 }
 
                 bloomAnimationCounter++;
 
-                //controls.update();
+                controls.update();
                 //stars.geometry.verticesNeedUpdate = true;
                 renderer.render(scene, camera);
                 //composer.render();
@@ -516,27 +592,80 @@
                 renderer.setSize(container.clientWidth, container.clientHeight);
             }
 
+            function createVerticesArray(posArray){
+                const vertArray = [];
+                let i= 0;
+                while(i< posArray.length){
+                    const vert = new THREE.Vector3(posArray[i++], posArray[i++], posArray[i++]);
+                    vertArray.push(vert);
+                }
+
+                return vertArray;
+
+        
+            }
+
             
 
             function handleRaycast(event){
                 
-                pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-				pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+                if(bloomAnimationCounter % 20 == 0){
+                    pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+                    pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
-				raycaster.setFromCamera( pointer, camera );
+                    raycaster.setFromCamera( pointer, camera );
 
-				const intersects = raycaster.intersectObjects( scene.children );
+                    const intersects = raycaster.intersectObjects( scene.children, true );
 
-                if(intersects.length > 0){
-                    console.log(intersects[0].object.name);
+                    if(intersects.length > 0){
+
+                        
+                        
+                        const clickedMesh = intersects[0].object;
+
+                       
+                        
+                        if(clickedMesh.name.startsWith('constel') && clickedMesh.userData.index !== selectedObjectIndex){
+                           
+                            
+                           
+                            const ssbb = computeScreenSpaceBoundingBox2(clickedMesh);
+
+                            console.log(clickedMesh.name);
+                            console.log(ssbb);
+                            descWrapper.style.left = Math.floor(ssbb.max.x) + 'px';
+                            descWrapper.style.bottom = Math.floor(ssbb.min.y) + 'px';
+                            descWrapper.style.opacity = 1.0;
+
+                            
+                            selectedObjectIndex = clickedMesh.userData.index;
+                            controls.enabled = false;
+                            gsap.to(camera.position, { ...constellations[selectedObjectIndex].camPos, duration:10, ease:"",onComplete: () => {
+                                setTimeout(() => {
+                                    controls.enabled = true;
+                                }, 1000);
+                                
+                            }});
+
+                            //camera.position.copy(constellations[selectedObjectIndex].camPos);
+
+                        }else{ 
+                            console.log(clickedMesh.name);
+                            descWrapper.style.opacity = 0.0;
+                            selectedObjectIndex = -1;
+                        }
+                        
+                    }
                 }
+
+                
                 
 
 
             }
 
             //window.addEventListener("pointerdown", handleRaycast);
-            window.addEventListener("mouseover", handleRaycast);
+            window.addEventListener("pointermove", handleRaycast);
 
 
             function handleRaycast2(objData){
@@ -554,7 +683,13 @@
                 gsap.to(selectedBGMat, { opacity: 0.85, duration:1, ease:"expo.out", onUpdate: () => {
                     selectedBGMat.needsUpdate = true;
                 },onComplete: () => {
-							
+						
+						
+						//createInnerPage1();
+
+						//showAnnotations = true;	
+						//controls.target.set(annotations[id].position.x, annotations[id].position.y, annotations[id].position.z );
+						//gsap.fromTo(annotDescHolder, {height:0, opacity:0}, {duration: 0.9, opacity:1.0, height: '12rem', ease: "expo.out"});			
 				}});
 
                 
@@ -581,11 +716,95 @@
 
             window.getChildWorldPosition = getChildWorldPosition;
 
-            function computeScreenSpaceBoundingBox(mesh, camera) {
-                var vertices = mesh.geometry.vertices;
+            window.getCamWorldDirection = function(){
+               
+                let target = new THREE.Vector3();
+                console.log(camera.getWorldDirection(target));
+            }
+
+            window.calculateStarsPosition = function(scale){
+
+                let scalarFactor;
+                if(!scale){
+                    scalarFactor = 1000.0;
+                }else{
+                    scalarFactor = scale;
+                }
+
+                planeMesh.scale.set(15, 15, 15);
+                
+                const directionVector = new THREE.Vector3();
+                directionVector.x = starsPos[0].x - originPos.x;
+                directionVector.y = starsPos[0].y - originPos.y;
+                directionVector.z = starsPos[0].z - originPos.z;
+
+                directionVector.normalize();
+                
+                let starPos = new THREE.Vector3();
+                starPos.x = originPos.x + directionVector.x * scalarFactor;
+                starPos.y = originPos.y + directionVector.y * scalarFactor;
+                starPos.z = originPos.z + directionVector.z * scalarFactor;
+
+                planeMesh.position.copy(starPos);
+                console.log(planeMesh.position);
+                planeMesh.quaternion.copy( camera.quaternion );
+            }
+
+
+            function computeScreenSpaceBoundingBox(mesh) {
+                //var vertices = mesh.geometry.vertices;
+                camera.updateMatrix();
+                camera.updateMatrixWorld();
+                camera.updateProjectionMatrix();
+                camera.updateWorldMatrix();     
+                
+                
+                //mesh.matrixAutoUpdate = true;
+
+                mesh.geometry.computeBoundingBox();
+                let bb = new THREE.Box3();
+                bb.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
+                //bb.quaternion.copy(camera.quaternion);
+
+                console.log(bb);
+
                 var vertex = new THREE.Vector3();
-                var min = new THREE.Vector3(1, 1, 1);
-                var max = new THREE.Vector3(-1, -1, -1);
+                var max = new THREE.Vector2(1, 1);
+                var min = new THREE.Vector2(1, 1);
+
+               
+                
+                //vertex.copy(bb.min);
+                let vertexScreenSpace1 = bb.min.clone().project(camera);
+                min.copy(vertexScreenSpace1);
+                
+
+                //vertex.copy(bb.max);
+                //camera.updateMatrixWorld();
+                let vertexScreenSpace2 = bb.max.clone().project(camera);
+                max.copy(vertexScreenSpace2);
+            
+                console.log(max);
+                console.log(min);
+
+                return new THREE.Box2(normalizedToPixels(min), normalizedToPixels(max));
+            }
+
+            function computeScreenSpaceBoundingBox2(mesh) {
+
+                //camera.updateMatrix();
+                //camera.updateMatrixWorld();
+                camera.updateProjectionMatrix();
+
+                let vertices = mesh.userData.vertices;
+
+                
+
+                var vertex = new THREE.Vector3();
+                var min = new THREE.Vector2(1, 1);
+                var max = new THREE.Vector2(-1, -1);
+
+                mesh.updateMatrixWorld();
 
                 for (var i = 0; i < vertices.length; i++) {
                     var vertexWorldCoord = vertex.copy(vertices[i]).applyMatrix4(mesh.matrixWorld);
@@ -594,10 +813,15 @@
                     max.max(vertexScreenSpace);
                 }
 
-                return new THREE.Box2(min, max);
+                
+
+                return new THREE.Box2(normalizedToPixels(min), normalizedToPixels(max));
             }
 
-
+            function normalizedToPixels(coord){
+                var halfScreen = new THREE.Vector2(window.innerWidth/2, window.innerHeight/2)
+                return coord.clone().multiply(halfScreen).add(halfScreen);
+            }
 
 
 		</script>
