@@ -202,17 +202,17 @@
 			}; 
 
             const starsPos = [{
-                x: 498, 
-                y: 468,
-                z: 698,
+                x: -678, 
+                y: 735,
+                z: 247,
             },{
                 x: 845, 
                 y: 91,
                 z: -285,
             },{
-                x: -536, 
-                y: -146,
-                z: -632,
+                x: 833, 
+                y: 257,
+                z: 330,
             },
             {
                 x: 217, 
@@ -222,36 +222,36 @@
             ];
 
             const constellations = [{
-                scale: {x: 15, y:15, z:15},
-                position: {x:-449, y:-110, z:-454},
+                scale: {x: 17, y:17, z:17},
+                position: {x:-574, y:647, z:261},
                 name: 'constel1',
-                camPos: {x: 311, y:2, z: 264 },
+                camPos: {x: 94, y:-76, z: -36 },
                 camLook: {x: -0.76, y: -6.12, z: - 0.64},
                 title: 'BUSINESS COMMUNICATIONS SUITE',
                 desc: 'This is some description about business communication'
             },{
-                scale: {x: 13, y:13, z:13},
+                scale: {x: 14, y:14, z:14},
                 position: {x:156, y:469, z:-539},
                 name: 'constel2',
-                camPos: {x: -127 , y:-187, z: 339 },
+                camPos: {x: -59 , y:-96, z: 127 },
                 camLook: {x: 0.31, y: 0.45, z: -0.83},
                 title: 'BUSINESS PROCESSES SUITE',
                 desc: 'This is some description about business communication'
             },
             {
                 scale: {x: 14, y:14, z:14},
-                position: {x:718, y:85, z:-197},
+                position: {x:833 * 0.85, y:257 * 0.85, z:330 * 0.85},
                 name: 'constel3',
-                camPos: {x: -403, y:-20, z: 59 },
+                camPos: {x: -218, y:-56, z: -51 },
                 camLook: {x: 0.98, y: 0.05, z: -0.14},
                 title: 'PRODUCTIVITY SUITE',
                 desc: 'This is some description about business communication'
             },
             {
                 scale: {x: 15, y:15, z:15},
-                position: {x:295, y:316, z:568},
+                position: {x:117 * 0.85, y:568 * 0.85, z:811 * 0.85},
                 name: 'constel4',
-                camPos: {x: -144, y:-102, z: -368 },
+                camPos: {x: -23, y:-77, z: -204 },
                 camLook: {x: 0.35, y: 0.25, z: 0.90},
                 title: 'GUIDANCE SUITE',
                 desc: 'This is some description about business communication'
@@ -268,13 +268,13 @@
                 scene = new THREE.Scene();
                 sceneg = scene;
 
-                originPos = {x: 182, y: 2, z: 366};
+                originPos = {x: -406, y: -46, z: -4.99};
 
-                camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
                 //camera.position.set(originPos.x, originPos.y, originPos.z);
                 //camera.lookAt(-0.44, -6.12, -0.89);
-                camera.position.set(-531, -45, 481);
-                camera.lookAt(0.74, 0.06, -0.66);
+                camera.position.set(445, -231, 150);
+                camera.lookAt(-0.85, 0.44, -0.28);
                 camerag = camera;
 
                 const directionalLight = new THREE.DirectionalLight("#fff", 2);
@@ -478,8 +478,13 @@
                 descDesc = document.querySelector('#desc-hldr .desc');
 
                 controls.addEventListener( 'start', ()=> {
-                    isDragging= true;
-                    console.log('drag started');
+                    isDragging = true;
+
+                    setTimeout(() => {
+                        descWrapper.style.opacity = 0;
+                    }, 500);
+                    
+                    //handleRaycast2();
                 } );
 
                 controls.addEventListener( 'end', ()=> {
@@ -525,7 +530,7 @@
                         
                     });
 
-                    periodicAnimationCounter += 0.01;
+                    //periodicAnimationCounter += 0.01;
                     
                     
                     //planeMesh.quaternion.copy(camera.quaternion);
@@ -607,7 +612,7 @@
                             setTimeout(() => {
                                 descWrapper.style.opacity = 1.0;
                                 isDescVisible = true;
-                            }, 3000);
+                            }, 2000);
                             
                             if(selectedObjectIndex !== -1){
                                 planes[selectedObjectIndex].material.map.animation.setSpeed(1.0);
@@ -624,7 +629,7 @@
                             planes[selectedObjectIndex].material.needsUpdate = true;
 
                             controls.enabled = false;
-                            gsap.to(camera.position, { ...constellations[selectedObjectIndex].camPos, duration:8, ease:"",onComplete: () => {
+                            gsap.to(camera.position, { ...constellations[selectedObjectIndex].camPos, duration:6, ease:"",onComplete: () => {
                                 setTimeout(() => {
                                     controls.enabled = true;
                                 }, 1000);
@@ -644,34 +649,24 @@
 
             }
 
-            //window.addEventListener("pointerdown", handleRaycast);
+            //window.addEventListener("pointerdown", handleRaycast2);
             window.addEventListener("pointermove", handleRaycast);
 
 
             function handleRaycast2(objData){
                 
-                selectedObjectIndex = objData.index;
-                const selectedObjMat = meshg.children[selectedObjectIndex].material;
+                pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+                pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
-                //selectedObjMat.color.set(0x000000);
-                //selectedObjMat.needsUpdate = true;
+                raycaster.setFromCamera( pointer, camera );
 
-                const selectedBGMat = model2.children[selectedObjectIndex].material;
-                selectedBGMat.map = bgTextures[selectedObjectIndex];
-                selectedBGMat.needsUpdate = true;
+                const intersects = raycaster.intersectObjects( scene.children, true );
 
-                gsap.to(selectedBGMat, { opacity: 0.85, duration:1, ease:"expo.out", onUpdate: () => {
-                    selectedBGMat.needsUpdate = true;
-                },onComplete: () => {
-						
-						
-						//createInnerPage1();
+                if(intersects.length > 0){
+                    console.log(intersects[0].point);
+                }
 
-						//showAnnotations = true;	
-						//controls.target.set(annotations[id].position.x, annotations[id].position.y, annotations[id].position.z );
-						//gsap.fromTo(annotDescHolder, {height:0, opacity:0}, {duration: 0.9, opacity:1.0, height: '12rem', ease: "expo.out"});			
-				}});
-
+                
                 
             }
 
@@ -711,6 +706,7 @@
                     scalarFactor = scale;
                 }
 
+                const planeMesh = planes[2];
                 planeMesh.scale.set(15, 15, 15);
                 
                 const directionVector = new THREE.Vector3();
