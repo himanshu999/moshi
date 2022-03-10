@@ -554,7 +554,7 @@
 
                 }
 
-                if(isDescVisible && selectedObjectIndex !== -1){
+                if(selectedObjectIndex !== -1){
                         const ssbb = computeScreenSpaceBoundingBox2(planes[selectedObjectIndex]);
                         descWrapper.style.left = Math.floor(ssbb.max.x) + 'px';
                         descWrapper.style.bottom = Math.floor(ssbb.min.y) + 'px';   
@@ -645,11 +645,11 @@
                             planes[selectedObjectIndex].material.needsUpdate = true;
 
                             const ssbb = computeScreenSpaceBoundingBox2(clickedMesh);
-                            if(ssbb.max.x < (window.innerWidth * 0.8) || ssbb.max.x < (window.innerWidth * 0.1)){
+                            if(ssbb.max.x > (window.innerWidth * 0.8) && ssbb.max.x > (window.innerWidth * 0.9) || ssbb.max.x < (window.innerWidth * 0.1)){
                                 //just scale
                                 descDisplayTimeout = 500;
                             }else{
-                                /*controls.enabled = false;
+                                controls.enabled = false;
                                 gsap.to(camera.position, { ...constellations[selectedObjectIndex].camPos, duration:6, ease:"",onComplete: () => {
                                     setTimeout(() => {
                                         controls.enabled = true;
@@ -659,7 +659,7 @@
 
                                 
 
-                                descDisplayTimeout = 2000;*/
+                                descDisplayTimeout = 2000;
                             }
 
                             const plane = planes[selectedObjectIndex];
