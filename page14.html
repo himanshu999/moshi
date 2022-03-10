@@ -114,6 +114,18 @@
         height: 54px;
     }
 
+    #logo-hldr{
+        position: absolute;
+        /* z-index: 1000000; */
+        width: 130px;
+        height: 130px;
+        bottom: 2%;
+        left: 1%;
+        background-position: center center;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
 			
 		</style>
 		<script>
@@ -135,6 +147,9 @@
             </div>
             
         </div>
+
+        <div id="logo-hldr" style="background-image:url('./assets/dhlogo2.gif')"></div>
+        
 
         <button id="start-button" onclick="handleEnterClick()">Enter</button>
 
@@ -181,7 +196,8 @@
             descDesc,
             isDescVisible = false,
             isDragging = false,
-            blobScale = 3;
+            blobScale = 3,
+            descDisplayTimeout = 500;
 
             let raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3());
 			const pointer = new THREE.Vector2();
@@ -223,7 +239,7 @@
 
             const constellations = [{
                 scale: {x: 17, y:17, z:17},
-                position: {x:-574, y:647, z:261},
+                position: {x:-574 * 0.9, y:647 * 0.9, z:261 * 0.9},
                 name: 'constel1',
                 camPos: {x: 94, y:-76, z: -36 },
                 camLook: {x: -0.76, y: -6.12, z: - 0.64},
@@ -303,7 +319,7 @@
                 //controls.maxDistance = 450;
                 //controls.minDistance = 150;
                 //controls.enablePan = false;
-                //controls.enableZoom = false;
+                controls.enableZoom = false;
                 //controls.enabled = false;
                 //controls.maxPolarAngle = Math.PI / 1.5;
                 controls.minPolarAngle = Math.PI / 2.0;
@@ -480,9 +496,9 @@
                 controls.addEventListener( 'start', ()=> {
                     isDragging = true;
 
-                    setTimeout(() => {
+                    //setTimeout(() => {
                         descWrapper.style.opacity = 0;
-                    }, 500);
+                    //}, 500);
                     
                     //handleRaycast2();
                 } );
@@ -538,7 +554,7 @@
 
                 }
 
-                if(isDescVisible && selectedObjectIndex !== -1){
+                if(selectedObjectIndex !== -1){
                         const ssbb = computeScreenSpaceBoundingBox2(planes[selectedObjectIndex]);
                         descWrapper.style.left = Math.floor(ssbb.max.x) + 'px';
                         descWrapper.style.bottom = Math.floor(ssbb.min.y) + 'px';   
@@ -601,6 +617,9 @@
                         const clickedMesh = intersects[0].object;
 
                         
+
+
+                        
                         
                         if(clickedMesh.name.startsWith('constel') && clickedMesh.userData.index !== selectedObjectIndex){
                            
@@ -608,15 +627,12 @@
                             descWrapper.style.opacity = 0;
                             isDescVisible = false;
 
-                           
-                            setTimeout(() => {
-                                descWrapper.style.opacity = 1.0;
-                                isDescVisible = true;
-                            }, 2000);
                             
                             if(selectedObjectIndex !== -1){
                                 planes[selectedObjectIndex].material.map.animation.setSpeed(1.0);
                                 planes[selectedObjectIndex].material.needsUpdate = true;
+                                /*const origScale = 
+                                gsap.to(planes[selectedObjectIndex].scale, {x: newScale, y: newScale, z: newScale, duration: 1, ease:""});*/
                             }
                             
                             
@@ -628,17 +644,47 @@
                             planes[selectedObjectIndex].material.map.animation.setSpeed(2.0);
                             planes[selectedObjectIndex].material.needsUpdate = true;
 
-                            controls.enabled = false;
-                            gsap.to(camera.position, { ...constellations[selectedObjectIndex].camPos, duration:6, ease:"",onComplete: () => {
-                                setTimeout(() => {
-                                    controls.enabled = true;
-                                }, 1000);
+                            const ssbb = computeScreenSpaceBoundingBox2(clickedMesh);
+                            if(ssbb.max.x < (window.innerWidth * 0.8)){
+                                //just scale
+                                descDisplayTimeout = 500;
+                            }else{
+                               /* controls.enabled = false;
+                                gsap.to(camera.position, { ...constellations[selectedObjectIndex].camPos, duration:6, ease:"",onComplete: () => {
+                                    setTimeout(() => {
+                                        controls.enabled = true;
+                                    }, 1000);
+                                    
+                                }}); */
+
                                 
-                            }});
+
+                                //descDisplayTimeout = 2000;
+                            }
+
+                            const plane = planes[selectedObjectIndex];
+                                const newScale = plane.scale.x * 1.2;
+
+                                gsap.to(plane.scale, {x: newScale, y: newScale, z: newScale, duration: 0.5, ease:""});
+
+                            setTimeout(() => {
+                                descWrapper.style.opacity = 1.0;
+                                isDescVisible = true;
+
+                                console.log(descDisplayTimeout);
+                            }, descDisplayTimeout);
+                            
+                            
 
                             //camera.position.copy(constellations[selectedObjectIndex].camPos);
-
+                        }else if(!clickedMesh.name.startsWith('constel') && selectedObjectIndex != -1){
+                            const plane = planes[selectedObjectIndex];
+                            const newScale = plane.scale.x * 0.83;
+                            gsap.to(plane.scale, {x: newScale, y: newScale, z: newScale, duration: 0.5, ease:""});
+                            selectedObjectIndex = -1;
                         }
+
+                        
                         
                     }
                 }
