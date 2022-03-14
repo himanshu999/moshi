@@ -485,7 +485,7 @@
 
                     if(selectedObjectIndex != -1){
                         const plane = planes[selectedObjectIndex];
-                        const newScale = plane.scale.x * (1.00/1.20);
+                        const newScale = plane.scale.x * 0.9;
 
                         gsap.to(plane.scale, {x: newScale, y: newScale, z: newScale, duration: 0.5, ease:""});
                         
@@ -543,7 +543,7 @@
                         
                     });
 
-                    periodicAnimationCounter += 0.01;
+                    //periodicAnimationCounter += 0.01;
                     
                     
                     //planeMesh.quaternion.copy(camera.quaternion);
@@ -649,7 +649,7 @@
                             }});
 
                             const plane = planes[selectedObjectIndex];
-                            const newScale = plane.scale.x * 1.2;
+                            const newScale = plane.scale.x * 1.1;
 
                             gsap.to(plane.scale, {x: newScale, y: newScale, z: newScale, duration: 0.3, ease:""});
 
