@@ -114,18 +114,6 @@
         height: 54px;
     }
 
-    #logo-hldr{
-        position: absolute;
-        /* z-index: 1000000; */
-        width: 130px;
-        height: 130px;
-        bottom: 2%;
-        left: 1%;
-        background-position: center center;
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
-
 			
 		</style>
 		<script>
@@ -147,9 +135,6 @@
             </div>
             
         </div>
-
-        <div id="logo-hldr" style="background-image:url('./assets/dhlogo2.gif')"></div>
-        
 
         <button id="start-button" onclick="handleEnterClick()">Enter</button>
 
@@ -197,7 +182,7 @@
             isDescVisible = false,
             isDragging = false,
             blobScale = 3,
-            descDisplayTimeout = 500;
+            tweenHandle;
 
             let raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3());
 			const pointer = new THREE.Vector2();
@@ -218,17 +203,17 @@
 			}; 
 
             const starsPos = [{
-                x: -678, 
-                y: 735,
-                z: 247,
+                x: 498, 
+                y: 468,
+                z: 698,
             },{
                 x: 845, 
                 y: 91,
                 z: -285,
             },{
-                x: 833, 
-                y: 257,
-                z: 330,
+                x: -536, 
+                y: -146,
+                z: -632,
             },
             {
                 x: 217, 
@@ -238,36 +223,36 @@
             ];
 
             const constellations = [{
-                scale: {x: 17, y:17, z:17},
-                position: {x:-574 * 0.9, y:647 * 0.9, z:261 * 0.9},
+                scale: {x: 15, y:15, z:15},
+                position: {x:-449, y:-110, z:-454},
                 name: 'constel1',
-                camPos: {x: 94, y:-76, z: -36 },
+                camPos: {x: 311, y:2, z: 264 },
                 camLook: {x: -0.76, y: -6.12, z: - 0.64},
                 title: 'BUSINESS COMMUNICATIONS SUITE',
                 desc: 'This is some description about business communication'
             },{
-                scale: {x: 14, y:14, z:14},
+                scale: {x: 13, y:13, z:13},
                 position: {x:156, y:469, z:-539},
                 name: 'constel2',
-                camPos: {x: -59 , y:-96, z: 127 },
+                camPos: {x: -127 , y:-187, z: 339 },
                 camLook: {x: 0.31, y: 0.45, z: -0.83},
                 title: 'BUSINESS PROCESSES SUITE',
                 desc: 'This is some description about business communication'
             },
             {
                 scale: {x: 14, y:14, z:14},
-                position: {x:833 * 0.85, y:257 * 0.85, z:330 * 0.85},
+                position: {x:718, y:85, z:-197},
                 name: 'constel3',
-                camPos: {x: -218, y:-56, z: -51 },
+                camPos: {x: -403, y:-20, z: 59 },
                 camLook: {x: 0.98, y: 0.05, z: -0.14},
                 title: 'PRODUCTIVITY SUITE',
                 desc: 'This is some description about business communication'
             },
             {
                 scale: {x: 15, y:15, z:15},
-                position: {x:117 * 0.85, y:568 * 0.85, z:811 * 0.85},
+                position: {x:295, y:316, z:568},
                 name: 'constel4',
-                camPos: {x: -23, y:-77, z: -204 },
+                camPos: {x: -144, y:-102, z: -368 },
                 camLook: {x: 0.35, y: 0.25, z: 0.90},
                 title: 'GUIDANCE SUITE',
                 desc: 'This is some description about business communication'
@@ -284,13 +269,13 @@
                 scene = new THREE.Scene();
                 sceneg = scene;
 
-                originPos = {x: -406, y: -46, z: -4.99};
+                originPos = {x: 182, y: 2, z: 366};
 
                 camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
                 //camera.position.set(originPos.x, originPos.y, originPos.z);
                 //camera.lookAt(-0.44, -6.12, -0.89);
-                camera.position.set(445, -231, 150);
-                camera.lookAt(-0.85, 0.44, -0.28);
+                camera.position.set(-531, -45, 481);
+                camera.lookAt(0.74, 0.06, -0.66);
                 camerag = camera;
 
                 const directionalLight = new THREE.DirectionalLight("#fff", 2);
@@ -494,13 +479,25 @@
                 descDesc = document.querySelector('#desc-hldr .desc');
 
                 controls.addEventListener( 'start', ()=> {
-                    isDragging = true;
+                    isDragging= true;
+                    console.log('grag started');
+                    if(tweenHandle)tweenHandle.kill();
 
-                    //setTimeout(() => {
-                        descWrapper.style.opacity = 0;
-                    //}, 500);
+                    if(selectedObjectIndex != -1){
+                        const plane = planes[selectedObjectIndex];
+                        const newScale = plane.scale.x * (1.00/1.20);
+
+                        gsap.to(plane.scale, {x: newScale, y: newScale, z: newScale, duration: 0.5, ease:""});
+                        
+                        setTimeout(() => {
+                            selectedObjectIndex = -1;
+                            isDescVisible = false;
+                            descWrapper.style.opacity = 0;
+                            //descWrapper.style.opacity = 0;
+                        }, 1300)
+                       
+                    }
                     
-                    //handleRaycast2();
                 } );
 
                 controls.addEventListener( 'end', ()=> {
@@ -546,7 +543,7 @@
                         
                     });
 
-                    //periodicAnimationCounter += 0.01;
+                    periodicAnimationCounter += 0.01;
                     
                     
                     //planeMesh.quaternion.copy(camera.quaternion);
@@ -554,7 +551,7 @@
 
                 }
 
-                if(selectedObjectIndex !== -1){
+                if(isDescVisible && selectedObjectIndex !== -1){
                         const ssbb = computeScreenSpaceBoundingBox2(planes[selectedObjectIndex]);
                         descWrapper.style.left = Math.floor(ssbb.max.x) + 'px';
                         descWrapper.style.bottom = Math.floor(ssbb.min.y) + 'px';   
@@ -617,22 +614,21 @@
                         const clickedMesh = intersects[0].object;
 
                         
-
-
-                        
                         
                         if(clickedMesh.name.startsWith('constel') && clickedMesh.userData.index !== selectedObjectIndex){
                            
                             
                             descWrapper.style.opacity = 0;
                             isDescVisible = false;
-
+                           
+                            setTimeout(() => {
+                                descWrapper.style.opacity = 1.0;
+                                isDescVisible = true;
+                            }, 1500);
                             
                             if(selectedObjectIndex !== -1){
                                 planes[selectedObjectIndex].material.map.animation.setSpeed(1.0);
                                 planes[selectedObjectIndex].material.needsUpdate = true;
-                                /*const origScale = 
-                                gsap.to(planes[selectedObjectIndex].scale, {x: newScale, y: newScale, z: newScale, duration: 1, ease:""});*/
                             }
                             
                             
@@ -644,47 +640,23 @@
                             planes[selectedObjectIndex].material.map.animation.setSpeed(2.0);
                             planes[selectedObjectIndex].material.needsUpdate = true;
 
-                            const ssbb = computeScreenSpaceBoundingBox2(clickedMesh);
-                            if(ssbb.max.x > (window.innerWidth * 0.8) && ssbb.max.x > (window.innerWidth * 0.9) || ssbb.max.x < (window.innerWidth * 0.1)){
-                                //just scale
-                                descDisplayTimeout = 500;
-                            }else{
-                                controls.enabled = false;
-                                gsap.to(camera.position, { ...constellations[selectedObjectIndex].camPos, duration:6, ease:"",onComplete: () => {
-                                    setTimeout(() => {
-                                        controls.enabled = true;
-                                    }, 1000);
-                                    
-                                }}); 
-
+                            //controls.enabled = false;
+                            tweenHandle = gsap.to(camera.position, { ...constellations[selectedObjectIndex].camPos, duration:6, ease:"",onComplete: () => {
+                                /*setTimeout(() => {
+                                    controls.enabled = true;
+                                }, 1000);*/
                                 
-
-                                descDisplayTimeout = 2000;
-                            }
+                            }});
 
                             const plane = planes[selectedObjectIndex];
-                                const newScale = plane.scale.x * 1.2;
+                            const newScale = plane.scale.x * 1.2;
 
-                                gsap.to(plane.scale, {x: newScale, y: newScale, z: newScale, duration: 0.5, ease:""});
+                            gsap.to(plane.scale, {x: newScale, y: newScale, z: newScale, duration: 0.3, ease:""});
 
-                            setTimeout(() => {
-                                descWrapper.style.opacity = 1.0;
-                                isDescVisible = true;
-
-                                console.log(descDisplayTimeout);
-                            }, descDisplayTimeout);
                             
-                            
-
                             //camera.position.copy(constellations[selectedObjectIndex].camPos);
-                        }else if(!clickedMesh.name.startsWith('constel') && selectedObjectIndex != -1){
-                            const plane = planes[selectedObjectIndex];
-                            const newScale = plane.scale.x * 0.83;
-                            gsap.to(plane.scale, {x: newScale, y: newScale, z: newScale, duration: 0.5, ease:""});
-                            selectedObjectIndex = -1;
-                        }
 
-                        
+                        }
                         
                     }
                 }
@@ -695,24 +667,36 @@
 
             }
 
-            //window.addEventListener("pointerdown", handleRaycast2);
+            //window.addEventListener("pointerdown", handleRaycast);
             window.addEventListener("pointermove", handleRaycast);
 
 
             function handleRaycast2(objData){
                 
-                pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-                pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+                selectedObjectIndex = objData.index;
+                const selectedObjMat = meshg.children[selectedObjectIndex].material;
 
-                raycaster.setFromCamera( pointer, camera );
+                //selectedObjMat.color.set(0x000000);
+                //selectedObjMat.needsUpdate = true;
 
-                const intersects = raycaster.intersectObjects( scene.children, true );
+                const selectedBGMat = model2.children[selectedObjectIndex].material;
+                selectedBGMat.map = bgTextures[selectedObjectIndex];
+                selectedBGMat.needsUpdate = true;
 
-                if(intersects.length > 0){
-                    console.log(intersects[0].point);
-                }
+                gsap.to(selectedBGMat, { opacity: 0.85, duration:1, ease:"expo.out", onUpdate: () => {
+                    selectedBGMat.needsUpdate = true;
+                },onComplete: () => {
+						
+						
+						//createInnerPage1();
 
-                
+						//showAnnotations = true;	
+						//controls.target.set(annotations[id].position.x, annotations[id].position.y, annotations[id].position.z );
+						//gsap.fromTo(annotDescHolder, {height:0, opacity:0}, {duration: 0.9, opacity:1.0, height: '12rem', ease: "expo.out"});			
+				}}); 
+
+            
+
                 
             }
 
@@ -752,7 +736,6 @@
                     scalarFactor = scale;
                 }
 
-                const planeMesh = planes[2];
                 planeMesh.scale.set(15, 15, 15);
                 
                 const directionVector = new THREE.Vector3();
