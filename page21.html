@@ -660,7 +660,7 @@
 
             }
 
-            //window.addEventListener("pointerdown", handleRaycast);
+            window.addEventListener("pointerdown", handleMouseClick);
             window.addEventListener("pointermove", handleRaycast);
 
 
@@ -693,7 +693,11 @@
 
 
             function handleMouseClick(){
+                
+                window.removeEventListener('pointerdown', handleMouseClick)
+                
                 const modal = document.getElementById('modal');
+
 
                 modal.style.zIndex = 1000;
 
