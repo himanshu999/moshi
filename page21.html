@@ -114,6 +114,17 @@
         height: 54px;
     }
 
+    #modal{
+        opacity: 0;
+        background: black;
+        position: absolute;
+        top:0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+    }
+
 			
 		</style>
 		<script>
@@ -135,6 +146,8 @@
             </div>
             
         </div>
+
+        <div id="modal"></div>
 
         <button id="start-button" onclick="handleEnterClick()">Enter</button>
 
@@ -271,20 +284,20 @@
 
                 originPos = {x: 182, y: 2, z: 366};
 
-                camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+                camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 3000);
                 //camera.position.set(originPos.x, originPos.y, originPos.z);
                 //camera.lookAt(-0.44, -6.12, -0.89);
                 camera.position.set(-531, -45, 481);
                 camera.lookAt(0.74, 0.06, -0.66);
                 camerag = camera;
 
-                const directionalLight = new THREE.DirectionalLight("#fff", 2);
+                const directionalLight = new THREE.DirectionalLight("#ffffff", 2.0);
                 directionalLight.position.set(0, 50, -20);
-                //scene.add(directionalLight);
+                scene.add(directionalLight);
 
-                let ambientLight = new THREE.AmbientLight("#ffffff", 1);
+                let ambientLight = new THREE.AmbientLight("#ffffff", 2.0);
                 ambientLight.position.set(0, 20, 20);
-                //scene.add(ambientLight);
+                scene.add(ambientLight);
 
                 renderer = new THREE.WebGLRenderer({
                     antialias: true,
@@ -304,7 +317,7 @@
                 //controls.maxDistance = 450;
                 //controls.minDistance = 150;
                 //controls.enablePan = false;
-                controls.enableZoom = false;
+                //controls.enableZoom = true;
                 //controls.enabled = false;
                 //controls.maxPolarAngle = Math.PI / 1.5;
                 controls.minPolarAngle = Math.PI / 2.0;
@@ -482,9 +495,6 @@
                     isDragging= true;
                     console.log('grag started');
                     if(tweenHandle)tweenHandle.kill();
-
-                    
-                    
                 } );
 
                 controls.addEventListener( 'end', ()=> {
@@ -530,7 +540,7 @@
                         
                     });
 
-                    //periodicAnimationCounter += 0.01;
+                    periodicAnimationCounter += 0.01;
                     
                     
                     //planeMesh.quaternion.copy(camera.quaternion);
@@ -538,15 +548,10 @@
 
                 }
 
-                if(isDescVisible && selectedObjectIndex != -1 ){
-                        try{
+                if(isDescVisible && selectedObjectIndex !== -1){
                         const ssbb = computeScreenSpaceBoundingBox2(planes[selectedObjectIndex]);
                         descWrapper.style.left = Math.floor(ssbb.max.x) + 'px';
-                        descWrapper.style.bottom = Math.floor(ssbb.min.y) + 'px';  
-                        }
-                        catch{
-                            
-                        }
+                        descWrapper.style.bottom = Math.floor(ssbb.min.y) + 'px';   
                 }
 
                 bloomAnimationCounter++;
@@ -612,13 +617,14 @@
                             
                             descWrapper.style.opacity = 0;
                             isDescVisible = false;
+
                            
                             setTimeout(() => {
                                 descWrapper.style.opacity = 1.0;
                                 isDescVisible = true;
-                            }, 1500);
+                            }, 2000);
                             
-                            if(selectedObjectIndex !== -1 && selectedObjectIndex !== -2){
+                            if(selectedObjectIndex !== -1){
                                 planes[selectedObjectIndex].material.map.animation.setSpeed(1.0);
                                 planes[selectedObjectIndex].material.needsUpdate = true;
                             }
@@ -640,32 +646,9 @@
                                 
                             }});
 
-                            const plane = planes[selectedObjectIndex];
-                            const newScale = plane.scale.x * 1.1;
-
-                            gsap.to(plane.scale, {x: newScale, y: newScale, z: newScale, duration: 0.3, ease:""});
-
                             
                             //camera.position.copy(constellations[selectedObjectIndex].camPos);
 
-                        }else if(!clickedMesh.name.startsWith('constel') && selectedObjectIndex !== -2 && selectedObjectIndex !== -1){
-                            //if(selectedObjectIndex != -1){
-                        const plane = planes[selectedObjectIndex];
-                        const newScale = plane.scale.x * 0.9;
-
-                        gsap.to(plane.scale, {x: newScale, y: newScale, z: newScale, duration: 0.5, ease:""});
-                        
-                        selectedObjectIndex = -2;
-                    
-                        
-                        setTimeout(() => {
-                                
-                            isDescVisible = false;
-                            descWrapper.style.opacity = 0;
-                            //descWrapper.style.opacity = 0;
-                        }, 1300)
-                       
-                    //}
                         }
                         
                     }
@@ -703,12 +686,83 @@
 						//showAnnotations = true;	
 						//controls.target.set(annotations[id].position.x, annotations[id].position.y, annotations[id].position.z );
 						//gsap.fromTo(annotDescHolder, {height:0, opacity:0}, {duration: 0.9, opacity:1.0, height: '12rem', ease: "expo.out"});			
-				}}); 
-
-            
+				}});
 
                 
             }
+
+
+            function handleMouseClick(){
+                const modal = document.getElementById('modal');
+
+                modal.style.zIndex = 1000;
+
+                gsap.to(camera.position, { x: 0.1, y:0.1, z: 0.1, duration:2, ease:"easeOut",onComplete: () => {
+                           
+                    camera.position.set(-948, 1, 2551);
+
+                    gsap.to(camera.position, { x: 134, y:9, z: -83, duration:6, ease:"Power4.easeInOut",onComplete: () => {
+                                
+                                
+                    }}); 
+
+                    setTimeout(() => {
+                        gsap.to(modal.style, {opacity: 0.0, duration: 2, ease:"", onComplete: () => {
+                        modal.style.zIndex = -1;
+
+                        
+                        
+                        }});
+                    }, 2500);
+                                
+                }});
+
+                gsap.to(modal.style, { opacity: 1.0, duration:1, ease:"",onComplete: () => {
+                                
+                    scene.remove(scene.getObjectByName('constel1'));
+                    scene.remove(scene.getObjectByName('constel2'));
+                    scene.remove(scene.getObjectByName('constel3'));
+                    scene.remove(scene.getObjectByName('constel4'));
+                    
+                    const posValue = 200 * 3.0;
+
+                    let sphereGeo = new THREE.SphereBufferGeometry(100, 60, 60);
+                    let sphereMat = new THREE.MeshStandardMaterial({
+                            color: 0xff00ff,
+                            roughness: 0.8,
+                            metalness: 0.9,
+                        });
+                    let sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
+                    sphereMesh.position.set(0, 0, -posValue);
+                    scene.add(sphereMesh);
+
+                    sphereGeo = new THREE.SphereBufferGeometry(100, 60, 60);
+                    sphereMat = new THREE.MeshStandardMaterial({
+                            color: 0x00ffff,
+                            roughness: 0.8,
+                            metalness: 0.9,
+                        });
+                    sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
+                    sphereMesh.position.set(posValue * 0.86, 0, posValue * 0.5);
+                    scene.add(sphereMesh);
+
+                    sphereGeo = new THREE.SphereBufferGeometry(100, 60, 60);
+                    sphereMat = new THREE.MeshStandardMaterial({
+                            color: 0x0000ff,
+                            roughness: 0.8,
+                            metalness: 0.9,
+                        });
+                    sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
+                    sphereMesh.position.set(-posValue * 0.86, 0, posValue * 0.5);
+                    scene.add(sphereMesh);
+
+                    
+                    
+                                
+                }});
+            }
+
+            window.handleMouseClick = handleMouseClick;
 
             function getChildWorldPosition(){
                 let target = new THREE.Vector3(); // create once an reuse it
